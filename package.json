@@ -1,0 +1,54 @@
+{
+  "name": "@antify/database",
+  "private": false,
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "vitest dev",
+    "lint": "eslint --ext .ts,.js,.mjs,.cjs .",
+    "prepack": "unbuild",
+    "release": "pnpm test && standard-version && git push --follow-tags && pnpm publish",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@nuxt/eslint-config": "^0.2.0",
+    "c8": "latest",
+    "eslint": "latest",
+    "standard-version": "latest",
+    "typescript": "latest",
+    "unbuild": "latest",
+    "vitest": "latest"
+  },
+  "dependencies": {
+    "h3": "^1.7.1",
+    "jiti": "^1.16.1",
+    "mongoose": "^6.8.1",
+    "pathe": "^1.0.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "~2.3.2"
+  },
+  "packageManager": "pnpm@7.0.0",
+  "engines": {
+    "node": ">=0.14"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
