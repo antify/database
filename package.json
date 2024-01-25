@@ -41,6 +41,10 @@
     "mongoose": "^6.8.1",
     "pathe": "^1.0.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antify/database.git"
+  },
   "optionalDependencies": {
     "fsevents": "~2.3.2"
   },
