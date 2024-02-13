@@ -1,7 +1,7 @@
 export { MultiConnectionClient } from './client/MultiConnectionClient';
 export { SingleConnectionClient } from './client/SingleConnectionClient';
 export { Client } from './client/Client';
-export { truncateAllCollections } from './client/utils';
+export { truncateAllCollections, truncateCollections } from './client/utils';
 export * from './types';
 export { loadDatabaseConfiguration, getDatabaseClient } from './utils';
 

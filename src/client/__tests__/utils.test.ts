@@ -1,52 +1,79 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, beforeEach, beforeAll } from 'vitest';
 import { MultiConnectionDatabaseConfiguration } from '../../types';
 import { MultiConnectionClient } from '../MultiConnectionClient';
-import { truncateAllCollections } from '../utils';
+import { truncateAllCollections, truncateCollections } from '../utils';
+import { Model } from "mongoose";
 
 describe('utils test', async () => {
   const connectionUrl = 'mongodb://root:root@127.0.0.1:27017';
+  const testSchema = {
+    name: {
+      type: String,
+    },
+  };
+  const testData = [
+    {
+      name: 'foo',
+    },
+    {
+      name: 'bar',
+    },
+  ];
+  const collections = [
+    'first_collections',
+    'second_collections',
+    'third_collections'
+  ];
+  let models: Model<any>[];
+  let client: MultiConnectionClient;
 
-  test('should truncate all collections correctly', async () => {
-    const client = await MultiConnectionClient.getInstance({
+  beforeAll(async () => {
+    client = await MultiConnectionClient.getInstance({
       databaseUrl: connectionUrl,
     } as MultiConnectionDatabaseConfiguration).connect(
-      'clear_all_collections_test'
+      'utils_tests'
     );
 
-    const testSchema = {
-      name: {
-        type: String,
-      },
-    };
+    collections.forEach((collection) => client.getSchema(collection).add(testSchema));
 
-    const testData = [
-      {
-        name: 'foo',
-      },
-      {
-        name: 'bar',
-      },
-    ];
+    models = collections.map((collection) => client.getModel(collection));
+  });
 
-    client.getSchema('first_collections').add(testSchema);
-    client.getSchema('second_collections').add(testSchema);
+  beforeEach(async () => {
+    // Truncate all collections
+    await Promise.all(
+      collections.map(async (collection) => {
+        await client.getConnection().db.dropCollection(collection);
+      })
+    );
 
-    const FirstCollectionModel = client.getModel('first_collections');
-    const SecondCollectionModel = client.getModel('second_collections');
+    // Seed each collection with test data
+    await Promise.all(models.map((model) => model.insertMany(testData)));
+  });
 
-    await Promise.all([
-      FirstCollectionModel.insertMany(testData),
-      SecondCollectionModel.insertMany(testData),
-    ]);
+  test('should truncate all collections correctly', async () => {
+    await truncateAllCollections(client.getConnection());
 
-    truncateAllCollections(client.getConnection());
+    const data = await Promise.all(models.map((model) => model.find({})));
 
-    // This test fails without this timeout. Don't know why.
-    await new Promise((resolve) => {
-      setTimeout(() => resolve(true), 100);
-    });
+    expect(data[0]).toHaveLength(0);
+    expect(data[1]).toHaveLength(0);
+    expect(data[2]).toHaveLength(0);
+  });
 
-    expect(await FirstCollectionModel.find({})).toHaveLength(0);
-    expect(await SecondCollectionModel.find({})).toHaveLength(0);
+  test('should truncate specific collections correctly', async () => {
+    await truncateCollections(client.getConnection(), [collections[0], collections[1]]);
+
+    const data = await Promise.all(models.map((model) => model.find({})));
+
+    expect(data[0]).toHaveLength(0);
+    expect(data[1]).toHaveLength(0);
+    expect(data[2]).toHaveLength(2);
+  });
+
+  test('should throw error if specific collections does not exists', async () => {
+    expect(() => truncateCollections(client.getConnection(), ['not_exists_collections']))
+      .rejects
+      .toThrowError('Collection not_exists_collections does not exist in database tenant_utils_tests');
   });
 });

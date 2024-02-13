@@ -1,11 +1,27 @@
 import { Connection } from 'mongoose';
 
 export async function truncateAllCollections(connection: Connection) {
-  const collections = await connection.db.listCollections().toArray();
+  const allCollections = await connection.db.listCollections().toArray();
+
+  await Promise.all(
+    allCollections.map(async (collection) => {
+      await connection.db.dropCollection(collection.name);
+    })
+  );
+}
+
+export async function truncateCollections(connection: Connection, collections: string[] = []) {
+  const allCollections = await connection.db.listCollections().toArray();
+
+  collections.forEach((collection) => {
+    if (!allCollections.find((c) => c.name === collection)) {
+      throw new Error(`Collection ${collection} does not exist in database ${connection.name}`);
+    }
+  });
 
   await Promise.all(
     collections.map(async (collection) => {
-      await connection.db.dropCollection(collection.name);
+      await connection.db.dropCollection(collection);
     })
   );
 }
