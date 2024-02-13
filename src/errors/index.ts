@@ -1,1 +1,0 @@
-export {CollectionDoesNotExistsError} from './CollectionDoesNotExistsError';

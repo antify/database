@@ -21,5 +21,3 @@ export * from './fixture/utils';
 export * from './drop-database/drop-database';
 export * from './drop-database/drop-database-multi';
 export { doesDatabaseExist } from './utils';
-
-export * from './errors';
