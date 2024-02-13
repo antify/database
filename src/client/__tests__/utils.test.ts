@@ -3,6 +3,7 @@ import { MultiConnectionDatabaseConfiguration } from '../../types';
 import { MultiConnectionClient } from '../MultiConnectionClient';
 import { truncateAllCollections, truncateCollections } from '../utils';
 import { Model } from "mongoose";
+import { CollectionDoesNotExistsError } from "../../errors";
 
 describe('utils test', async () => {
   const connectionUrl = 'mongodb://root:root@127.0.0.1:27017';
@@ -74,6 +75,6 @@ describe('utils test', async () => {
   test('should throw error if specific collections does not exists', async () => {
     expect(() => truncateCollections(client.getConnection(), ['not_exists_collections']))
       .rejects
-      .toThrowError('Collection not_exists_collections does not exist in database tenant_utils_tests');
+      .toThrowError(CollectionDoesNotExistsError);
   });
 });

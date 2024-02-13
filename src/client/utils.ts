@@ -1,4 +1,5 @@
 import { Connection } from 'mongoose';
+import { CollectionDoesNotExistsError } from "../errors";
 
 export async function truncateAllCollections(connection: Connection) {
   const allCollections = await connection.db.listCollections().toArray();
@@ -15,7 +16,7 @@ export async function truncateCollections(connection: Connection, collections: s
 
   collections.forEach((collection) => {
     if (!allCollections.find((c) => c.name === collection)) {
-      throw new Error(`Collection ${collection} does not exist in database ${connection.name}`);
+      throw new CollectionDoesNotExistsError(collection, connection);
     }
   });
 
