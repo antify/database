@@ -1,4 +1,6 @@
 import {Client} from './client/Client';
+import {SingleConnectionClient} from './client/SingleConnectionClient';
+import {MultiConnectionClient} from './client/MultiConnectionClient';
 
 export type DatabaseConfiguration = {
     /**
@@ -10,17 +12,24 @@ export type DatabaseConfiguration = {
     databaseUrl: string;
 
     /**
-     * Directory where migration files are expected.
+     * Directory where migration files are located.
      * Default is `migrations/[CONFIGURATION_NAME]`
      * // TODO:: implement default dir like fixtures does and make it not required
+     * // TODO:: allow multiple migration dirs for module development
      */
     migrationDir: string;
 
     /**
-     * Directory where fixture files are expected.
+     * Directory where fixture files are located.
      * Default is `fixtures/[CONFIGURATION_NAME]`
      */
     fixturesDir?: string | string[];
+
+    /**
+     * Directory where schema files are located.
+     * Default is `schemas/[CONFIGURATION_NAME]`
+     */
+    schemasDir?: string | string[];
 };
 
 export type SingleConnectionDatabaseConfiguration = {
@@ -41,26 +50,8 @@ export type DatabaseConfigurations = Record<
 >;
 export type DatabaseConfigurationTenant = { id: string; name: string };
 
-// TODO:: Move, its no type anymore
-export const defineDatabaseConfig = (
-    config: DatabaseConfigurations
-): DatabaseConfigurations => {
-    // TODO:: mai remove because its typed and should throw there already
-    for (const databaseName of Object.keys(config)) {
-        if (!config[databaseName].isSingleConnection) {
-            if (
-                (config[databaseName] as MultiConnectionDatabaseConfiguration)
-                    .fetchTenants === undefined
-            ) {
-                throw new Error(
-                    `Configuration "${databaseName}" require "fetchTenants" is configured because it is a multi connection`
-                );
-            }
-        }
-    }
-
-    return config;
-};
+export type DefineSchemaCb = (client: SingleConnectionClient | MultiConnectionClient) => Promise<void>;
+export const defineSchema = (cb: DefineSchemaCb) => cb;
 
 export type Migration = {
     name?: string;
@@ -68,9 +59,7 @@ export type Migration = {
     down: (client: Client) => Promise<void>;
 };
 
-export const defineMigration = (migration: Migration): Migration => {
-    return migration;
-};
+export const defineMigration = (migration: Migration): Migration => migration;
 
 export type Fixture = {
     name?: string;
@@ -78,9 +67,7 @@ export type Fixture = {
     dependsOn: () => string[];
 };
 
-export const defineFixture = (fixture: Fixture): Fixture => {
-    return fixture;
-};
+export const defineFixture = (fixture: Fixture): Fixture => fixture;
 
 export interface MigrationSchema {
     file: string;

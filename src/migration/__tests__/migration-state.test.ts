@@ -4,7 +4,7 @@ import { generateMigrationMocks } from './utils';
 
 describe('state test', async () => {
   test('should initialize state correctly', async () => {
-    let state = new MigrationState(
+    const state = new MigrationState(
       generateMigrationMocks(['a', 'b', 'c', 'd', 'f']),
       ['a', 'b', 'e']
     );

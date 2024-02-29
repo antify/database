@@ -17,11 +17,11 @@ It does:
 - [ ] Implement rollback mechanism on error
 - [x] Implement stop mechanism on error
 - [ ] Implement migrate down
-- [ ] Do not always need a schema extension for client. Do it once with a "get schema extension" hook or similar
+- [x] Do not always need a schema extension for client. Do it once with a "get schema extension" hook or similar
 - [ ] Find a way to handle schema options like {timestamps: true}
 - [ ] Make migrations dir in configuration not required
-- [ ] Allow multiple migration dirs to add them from different positions (modules)
-- [ ] Add config with schema extension file path and extend all schemas before migrating, loading fixtures etc.
+- [x] Allow multiple migration dirs to add them from different positions (modules)
+- [x] Add config with schema extension file path and extend all schemas before migrating, loading fixtures etc.
   This saves calling it manual all time.
 
 ## Usage
@@ -31,7 +31,7 @@ TODO::
 ### Migration naming
 
 The sorting of the migration names is important. New migrations should be added to the end (sorted ASC).
-Its recommended to use a timestamp or date as beginning for the name.
+It's recommended to use a timestamp or date as name prefix.
 
 ## Development
 

@@ -1,83 +1,83 @@
 import {
-  LoadFixtureExecutionResult,
-  DatabaseConfiguration,
-  Fixture,
+	LoadFixtureExecutionResult,
+	Fixture,
 } from '../types';
-import { loadFixturesFromFilesystem } from './file-handler';
-import { Client } from '../client/Client';
-import { sortFixturesByDependency } from './depends-handler';
+import {loadFixturesFromFilesystem} from './file-handler';
+import {Client} from '../client/Client';
+import {sortFixturesByDependency} from './depends-handler';
+import {MultiConnectionClient} from '../client/MultiConnectionClient';
+import {SingleConnectionClient} from '../client/SingleConnectionClient';
 
 export type LoadFixtureCallbacks = {
-  beforeLoadFixture?: (fixtureName: string) => void;
-  onLoadFixtureFinished?: (executionResult: LoadFixtureExecutionResult) => void;
+	beforeLoadFixture?: (fixtureName: string) => void;
+	onLoadFixtureFinished?: (executionResult: LoadFixtureExecutionResult) => void;
 };
 
 export const loadFixtures = async (
-  databaseConfiguration: DatabaseConfiguration,
-  projectRootDir: string,
-  client: Client,
-  callbacks?: LoadFixtureCallbacks
+	client: SingleConnectionClient | MultiConnectionClient,
+	projectRootDir: string,
+	callbacks?: LoadFixtureCallbacks
 ): Promise<LoadFixtureExecutionResult[]> => {
-  const results: LoadFixtureExecutionResult[] = [];
-  let fixtures = loadFixturesFromFilesystem(
-    projectRootDir,
-    databaseConfiguration
-  );
+	const results: LoadFixtureExecutionResult[] = [];
+	let fixtures = loadFixturesFromFilesystem(
+		projectRootDir,
+		client.getConfiguration()
+	);
 
-  if (fixtures.length <= 0) {
-    callbacks?.onLoadFixtureFinished?.({
-      info: 'No fixtures to load',
-    });
+	if (fixtures.length <= 0) {
+		callbacks?.onLoadFixtureFinished?.({
+			info: 'No fixtures to load',
+		});
 
-    return results;
-  }
+		return results;
+	}
 
-  try {
-    fixtures = sortFixturesByDependency(fixtures);
-  } catch (e) {
-    callbacks?.onLoadFixtureFinished?.({
-      error: e as Error,
-    });
+	try {
+		fixtures = sortFixturesByDependency(fixtures);
+	} catch (e) {
+		callbacks?.onLoadFixtureFinished?.({
+			error: e as Error,
+		});
 
-    return results;
-  }
+		return results;
+	}
 
-  for (const fixture of fixtures) {
-    callbacks?.beforeLoadFixture?.(fixture.name as string);
+	for (const fixture of fixtures) {
+		callbacks?.beforeLoadFixture?.(fixture.name as string);
 
-    const result = await executeFixture(client, fixture);
+		const result = await executeFixture(client, fixture);
 
-    callbacks?.onLoadFixtureFinished?.(result);
+		callbacks?.onLoadFixtureFinished?.(result);
 
-    results.push(result);
+		results.push(result);
 
-    if (result.stopLoadFixtureProcess) {
-      return results;
-    }
-  }
+		if (result.stopLoadFixtureProcess) {
+			return results;
+		}
+	}
 
-  return results;
+	return results;
 };
 
 const executeFixture = async (
-  client: Client,
-  fixture: Fixture
+	client: Client,
+	fixture: Fixture
 ): Promise<LoadFixtureExecutionResult> => {
-  const result: LoadFixtureExecutionResult = {
-    fixtureName: fixture.name,
-    error: null,
-    executionTimeInMs: null,
-  };
-  const startTime = process.hrtime();
+	const result: LoadFixtureExecutionResult = {
+		fixtureName: fixture.name,
+		error: null,
+		executionTimeInMs: null,
+	};
+	const startTime = process.hrtime();
 
-  try {
-    await fixture.load(client);
-  } catch (e) {
-    result.stopLoadFixtureProcess = true;
-    result.error = e as Error;
-  }
+	try {
+		await fixture.load(client);
+	} catch (e) {
+		result.stopLoadFixtureProcess = true;
+		result.error = e as Error;
+	}
 
-  result.executionTimeInMs = process.hrtime(startTime)[1] / 1000000;
+	result.executionTimeInMs = process.hrtime(startTime)[1] / 1000000;
 
-  return result;
+	return result;
 };

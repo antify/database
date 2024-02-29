@@ -2,6 +2,8 @@ import { Client } from '../client/Client';
 import { DatabaseConfiguration, Migration } from '../types';
 import { loadMigrationsFromFilesystem } from './file-handler';
 import { getMigrationDocuments, initMigrationSchema } from './utils';
+import {MultiConnectionClient} from '../client/MultiConnectionClient';
+import {SingleConnectionClient} from '../client/SingleConnectionClient';
 
 export class MigrationState {
   /**
@@ -53,7 +55,7 @@ export class MigrationState {
     this.migrations = available;
     this.available = available.map((migration) => {
       if (migration.name === undefined) {
-        throw new Error(`Missing required migration name`);
+        throw new Error('Missing required migration name');
       }
 
       return migration.name;
@@ -137,14 +139,13 @@ export class MigrationState {
 }
 
 export const makeMigrationState = async (
-  client: Client,
-  projectRootDir: string,
-  databaseConfiguration: DatabaseConfiguration
+  client: SingleConnectionClient | MultiConnectionClient,
+  projectRootDir: string
 ): Promise<MigrationState> => {
   initMigrationSchema(client);
 
   return new MigrationState(
-    loadMigrationsFromFilesystem(projectRootDir, databaseConfiguration),
+    loadMigrationsFromFilesystem(projectRootDir, client.getConfiguration()),
     (await getMigrationDocuments(client)).map((item) => item.file)
   );
 };

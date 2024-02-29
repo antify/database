@@ -1,44 +1,38 @@
-import {
-  LoadFixtureResult,
-  MultiConnectionDatabaseConfiguration,
-} from '../types';
-import { MultiConnectionClient } from '../client/MultiConnectionClient';
-import { LoadFixtureCallbacks, loadFixtures } from './load-fixtures';
+import {LoadFixtureResult} from '../types';
+import {MultiConnectionClient} from '../client/MultiConnectionClient';
+import {LoadFixtureCallbacks, loadFixtures} from './load-fixtures';
 
 export type MultiConnectionLoadFixtureCallbacks = {
-  beforeLoadFixtureTenant?: (tenantId: string, tenantName: string) => void;
-  onTenantLoadFixturesFinished?: (loadFixtureResult: LoadFixtureResult) => void;
+	beforeLoadFixtureTenant?: (tenantId: string, tenantName: string) => void;
+	onTenantLoadFixturesFinished?: (loadFixtureResult: LoadFixtureResult) => void;
 } & LoadFixtureCallbacks;
 
 export const loadFixturesMulticonnection = async (
-  databaseConfig: MultiConnectionDatabaseConfiguration,
-  projectRootDir: string,
-  callbacks?: MultiConnectionLoadFixtureCallbacks
+	client: MultiConnectionClient,
+	projectRootDir: string,
+	callbacks?: MultiConnectionLoadFixtureCallbacks
 ): Promise<void> => {
-  const tenants = await databaseConfig.fetchTenants();
+	const tenants = await client.getConfiguration().fetchTenants();
 
-  for (const tenant of tenants) {
-    const client = await MultiConnectionClient.getInstance(
-      databaseConfig
-    ).connect(tenant.id);
+	for (const tenant of tenants) {
+		await client.connect(tenant.id);
 
-    callbacks?.beforeLoadFixtureTenant?.(tenant.id, tenant.name);
+		callbacks?.beforeLoadFixtureTenant?.(tenant.id, tenant.name);
 
-    const results = await loadFixtures(
-      databaseConfig,
-      projectRootDir,
-      client,
-      callbacks
-    );
+		const results = await loadFixtures(
+			client,
+			projectRootDir,
+			callbacks
+		);
 
-    callbacks?.onTenantLoadFixturesFinished?.({
-      tenantId: tenant.id,
-      tenantName: tenant.name,
-      results,
-    });
+		callbacks?.onTenantLoadFixturesFinished?.({
+			tenantId: tenant.id,
+			tenantName: tenant.name,
+			results,
+		});
 
-    if (results[results.length - 1]?.stopLoadFixtureProcess === true) {
-      return;
-    }
-  }
+		if (results[results.length - 1]?.stopLoadFixtureProcess === true) {
+			return;
+		}
+	}
 };

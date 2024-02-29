@@ -3,7 +3,8 @@ export { SingleConnectionClient } from './client/SingleConnectionClient';
 export { Client } from './client/Client';
 export { truncateAllCollections, truncateCollections } from './client/utils';
 export * from './types';
-export { loadDatabaseConfiguration, getDatabaseClient } from './utils';
+export { loadDatabaseConfiguration } from './config';
+export { getDatabaseClient } from './client';
 
 export * from './migration/file-handler';
 // export * from './migration/migrate-down';
@@ -17,7 +18,10 @@ export * from './fixture/load-fixtures';
 export * from './fixture/load-fixtures-multi';
 export * from './fixture/utils';
 
-// export * from './http/getDatabaseClient';
+export * from './schema/load-schemas';
+
 export * from './drop-database/drop-database';
 export * from './drop-database/drop-database-multi';
 export { doesDatabaseExist } from './utils';
+
+export * from './config';

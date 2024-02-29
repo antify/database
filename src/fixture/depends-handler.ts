@@ -3,7 +3,7 @@ import { Fixture } from '../types';
 export const sortFixturesByDependency = (fixtures: Fixture[]): Fixture[] => {
   for (const fixture of fixtures) {
     if (!fixture.name) {
-      throw new Error(`Can not sort fixtures without a valid name.`);
+      throw new Error('Can not sort fixtures without a valid name.');
     }
 
     const dependencies = fixture.dependsOn();
@@ -40,7 +40,7 @@ export const sortFixturesByDependency = (fixtures: Fixture[]): Fixture[] => {
 
   const sort = (fixture: Fixture) => {
     if (!fixture.name) {
-      throw new Error(`Can not sort fixtures without a valid name.`);
+      throw new Error('Can not sort fixtures without a valid name.');
     }
 
     const dependencies = fixture.dependsOn();

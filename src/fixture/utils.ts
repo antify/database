@@ -8,6 +8,7 @@ export const getAbsoluteFixturesDirs = (
     let fixturesDir = databaseConfig?.fixturesDir;
 
     if (!fixturesDir) {
+      // TODO:: does not match the description, that fixtures/CONFIGURATION_NAME is used as default
         // fixturesDir = `fixtures/${databaseConfig.name}`;
         return []
     }

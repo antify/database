@@ -26,7 +26,7 @@ describe('Load fixtures test', async () => {
   });
 
   test('Should load and execute all fixtures', async () => {
-    const { databaseConfiguration, client, fixtureMocks } = getMocks();
+    const { client, fixtureMocks } = getMocks();
     const callback: LoadFixtureCallbacks = {
       onLoadFixtureFinished(executionResult) {},
     };
@@ -40,9 +40,8 @@ describe('Load fixtures test', async () => {
     );
 
     const result = await loadFixtures(
-      databaseConfiguration,
+			client,
       '',
-      client,
       callback
     );
 
@@ -76,7 +75,7 @@ describe('Load fixtures test', async () => {
   });
 
   test('Should stop loading fixtures if an error occured', async () => {
-    const { databaseConfiguration, client } = getMocks();
+    const { client } = getMocks();
     const fixtureMocks = [
       defineFixture({
         name: 'test-1',
@@ -114,10 +113,9 @@ describe('Load fixtures test', async () => {
       fixtureMocks
     );
 
-    const result = await loadFixtures(
-      databaseConfiguration,
+    await loadFixtures(
+			client,
       '',
-      client,
       callback
     );
 
@@ -136,7 +134,7 @@ describe('Load fixtures test', async () => {
   });
 
   test('Should show info if there are no fixtures to load', async () => {
-    const { databaseConfiguration, client, fixtureMocks } = getMocks();
+    const { client, fixtureMocks } = getMocks();
     const callback: LoadFixtureCallbacks = {
       onLoadFixtureFinished(executionResult) {},
     };
@@ -148,9 +146,8 @@ describe('Load fixtures test', async () => {
     vi.spyOn(fileHandler, 'loadFixturesFromFilesystem').mockReturnValue([]);
 
     const result = await loadFixtures(
-      databaseConfiguration,
+			client,
       '',
-      client,
       callback
     );
 

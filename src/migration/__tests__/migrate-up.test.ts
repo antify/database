@@ -31,7 +31,7 @@ describe('Migrate up test', async () => {
       migrationDir: '',
     };
     const client = SingleConnectionClient.getInstance(databaseConfiguration);
-    const migrator = new Migrator(client, databaseConfiguration, '');
+    const migrator = new Migrator(client, '');
 
     vi.spyOn(client, 'getModel').mockImplementation(
       <T>(modelName: string): Model<T> => {

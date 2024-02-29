@@ -2,7 +2,7 @@ import { describe, test, expect, beforeEach, beforeAll } from 'vitest';
 import { MultiConnectionDatabaseConfiguration } from '../../types';
 import { MultiConnectionClient } from '../MultiConnectionClient';
 import { truncateAllCollections, truncateCollections } from '../utils';
-import { Model } from "mongoose";
+import { Model } from 'mongoose';
 
 describe('utils test', async () => {
   const connectionUrl = 'mongodb://root:root@127.0.0.1:27017';
