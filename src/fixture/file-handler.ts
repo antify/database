@@ -1,7 +1,6 @@
-import {forceRequire, removeFileTypeExtension} from '../utils';
+import {forceRequire, getFilenames} from '../utils';
 import {DatabaseConfiguration, Fixture} from '../types';
 import {getAbsoluteFixturesDirs} from './utils';
-import fs from 'fs';
 
 export const loadFixturesFromFilesystem = (
 	projectRootDir: string,
@@ -14,7 +13,7 @@ export const loadFixturesFromFilesystem = (
 	);
 
 	absoluteFixturesDirs.forEach((absoluteFixturesDir: string) => {
-		getFixturesFilenames(absoluteFixturesDir).forEach((filename) => {
+		getFilenames(absoluteFixturesDir).forEach((filename) => {
 			const fixture = forceRequire(
 				`./${filename}`,
 				absoluteFixturesDir
@@ -26,15 +25,4 @@ export const loadFixturesFromFilesystem = (
 	});
 
 	return fixtures;
-};
-
-const getFixturesFilenames = (dir: string): string[] => {
-	if (!fs.existsSync(dir)) {
-		return [];
-	}
-
-	return fs
-		.readdirSync(dir)
-		.map((filename) => removeFileTypeExtension(filename))
-		.sort();
 };

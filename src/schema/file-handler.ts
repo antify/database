@@ -1,7 +1,6 @@
-import {forceRequire, removeFileTypeExtension} from '../utils';
+import {forceRequire, getFilenames} from '../utils';
 import {DatabaseConfiguration, DefineSchemaCb} from '../types';
 import {getAbsoluteSchemasDirs} from './utils';
-import fs from 'fs';
 
 export const loadSchemasFromFilesystem = (
 	projectRootDir: string,
@@ -14,7 +13,7 @@ export const loadSchemasFromFilesystem = (
 	);
 
 	absoluteSchemasDirs.forEach((absoluteSchemasDir: string) => {
-		getSchemasFilenames(absoluteSchemasDir).forEach((filename) => {
+		getFilenames(absoluteSchemasDir).forEach((filename) => {
 			const schema = forceRequire(
 				`./${filename}`,
 				absoluteSchemasDir
@@ -25,15 +24,4 @@ export const loadSchemasFromFilesystem = (
 	});
 
 	return schemaCallbacks;
-};
-
-const getSchemasFilenames = (dir: string): string[] => {
-	if (!fs.existsSync(dir)) {
-		return [];
-	}
-
-	return fs
-		.readdirSync(dir)
-		.map((filename) => removeFileTypeExtension(filename))
-		.sort();
 };

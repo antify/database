@@ -1,5 +1,6 @@
 import jiti from 'jiti';
 import {type Connection} from 'mongoose';
+import fs from 'fs';
 
 export function forceRequire(id: string, rootDir: string = process.cwd()) {
 	const _require = jiti(rootDir, {interopDefault: true, esmResolve: true});
@@ -16,4 +17,17 @@ export const doesDatabaseExist = async (connection: Connection, databaseName: st
 	const databaseNames = databases.databases.map((dbInfo) => dbInfo.name);
 
 	return databaseNames.includes(databaseName);
+};
+
+export const getFilenames = (dir: string): string[] => {
+	if (!fs.existsSync(dir)) {
+		return [];
+	}
+
+	return fs
+		.readdirSync(dir)
+		.filter((filename) => !filename.endsWith('.d.ts'))
+		.filter((filename) => filename.endsWith('.ts') || filename.endsWith('.js') || filename.endsWith('.mjs'))
+		.map((filename) => removeFileTypeExtension(filename))
+		.sort();
 };
