@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/antify/database/compare/v1.1.0...v1.2.0) (2024-03-13)
+
+
+### Features
+
+* [#6](https://github.com/antify/database/issues/6) outsource getFilename functions into one ([4b15561](https://github.com/antify/database/commit/4b155613492f27fb72bb03f8d14c26c6a6a41172))
+
 ## 1.1.0 (2024-03-06)
 
 
