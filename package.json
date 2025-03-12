@@ -39,7 +39,7 @@
   "dependencies": {
     "h3": "^1.7.1",
     "jiti": "^1.16.1",
-    "mongoose": "^6.8.1",
+    "mongoose": "^8.12.1",
     "pathe": "^1.0.0"
   },
   "repository": {
@@ -51,7 +51,7 @@
   },
   "packageManager": "pnpm@7.0.0",
   "engines": {
-    "node": ">=0.14"
+    "node": ">=22.14"
   },
   "publishConfig": {
     "access": "public"
