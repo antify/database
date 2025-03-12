@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/antify/database/compare/v1.2.0...v1.3.0) (2025-03-12)
+
+
+### Features
+
+* Bump mongoose to ^8.12.1 and node to 22.14 ([37a2204](https://github.com/antify/database/commit/37a2204493cf4f52c672bb2be4be18c0bd2eba2e))
+
 ## [1.2.0](https://github.com/antify/database/compare/v1.1.0...v1.2.0) (2024-03-13)
 
 
