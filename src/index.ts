@@ -25,3 +25,4 @@ export * from './drop-database/drop-database-multi';
 export { doesDatabaseExist } from './utils';
 
 export * from './config';
+export {disconnect, connections} from 'mongoose';
