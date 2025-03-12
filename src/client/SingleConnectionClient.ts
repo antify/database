@@ -26,10 +26,7 @@ export class SingleConnectionClient extends Client {
 
   async connect(): Promise<SingleConnectionClient> {
     if (!this.connection) {
-      this.connection = await createConnection(this.databaseUrl, {
-          // TODO:: check this - should not stay there
-          authSource: 'admin',
-        })
+      this.connection = await createConnection(this.databaseUrl)
         .asPromise();
 
       this.connection.on('error', (err) => {
