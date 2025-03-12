@@ -1,4 +1,4 @@
-import { Model, Schema, Connection } from 'mongoose';
+import { Model, Schema, type Connection } from 'mongoose';
 
 export class Client {
   protected schemas: Record<string, Schema> = {};

@@ -1,4 +1,4 @@
-import mongoose, { Connection } from 'mongoose';
+import { type Connection, createConnection } from 'mongoose';
 import { MultiConnectionDatabaseConfiguration } from '../types';
 import { Client } from './Client';
 
@@ -39,8 +39,7 @@ export class MultiConnectionClient extends Client {
       return this.connection;
     }
 
-    this.connection = await mongoose
-      .createConnection(this.databaseUrl, {
+    this.connection = await createConnection(this.databaseUrl, {
         // TODO:: check this - should not stay there
         authSource: 'admin',
       })

@@ -1,5 +1,5 @@
 import jiti from 'jiti';
-import {type Connection} from 'mongoose';
+import type { Connection} from 'mongoose';
 import fs from 'fs';
 
 export function forceRequire(id: string, rootDir: string = process.cwd()) {

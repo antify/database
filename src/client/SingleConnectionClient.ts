@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import { createConnection } from 'mongoose';
 import { SingleConnectionDatabaseConfiguration } from '../types';
 import { Client } from './Client';
 
@@ -26,8 +26,7 @@ export class SingleConnectionClient extends Client {
 
   async connect(): Promise<SingleConnectionClient> {
     if (!this.connection) {
-      this.connection = await mongoose
-        .createConnection(this.databaseUrl, {
+      this.connection = await createConnection(this.databaseUrl, {
           // TODO:: check this - should not stay there
           authSource: 'admin',
         })

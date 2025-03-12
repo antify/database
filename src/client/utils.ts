@@ -1,4 +1,4 @@
-import { Connection } from 'mongoose';
+import { type Connection } from 'mongoose';
 
 export async function truncateAllCollections(connection: Connection) {
   const allCollections = await connection.db.listCollections().toArray();
