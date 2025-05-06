@@ -1,7 +1,15 @@
-import { Migration, MigrationExecutionResult } from '../types';
-import { Client } from '../client/Client';
-import { Migrator } from './migrator';
-import {defineMigrationSchema} from "./utils";
+import {
+  Migration, MigrationExecutionResult,
+} from '../types';
+import {
+  Client,
+} from '../client/Client';
+import {
+  Migrator,
+} from './migrator';
+import {
+  defineMigrationSchema,
+} from './utils';
 
 export type MigrationCallbacks = {
   beforeMigrate?: (migrationName: string) => void;
@@ -14,7 +22,7 @@ export type MigrationCallbacks = {
  */
 export const migrateUpToEnd = async (
   migrator: Migrator,
-  callbacks?: MigrationCallbacks
+  callbacks?: MigrationCallbacks,
 ): Promise<MigrationExecutionResult[]> => {
   const results: MigrationExecutionResult[] = [];
   const migrationsToExecute = (
@@ -52,29 +60,23 @@ export const migrateUpTo = async (
   callbacks?: {
     beforeMigrate?: (migrationName: string) => void;
     onMigrationFinished?: (executionResult: MigrationExecutionResult) => void;
-  }
+  },
 ): Promise<MigrationExecutionResult[]> => {
   const results: MigrationExecutionResult[] = [];
   const migrationState = await migrator.loadMigrationState();
 
   if (
-    !migrationState.available.some(
-      (_migration) => _migration === migrationUntilToMigrate
-    )
+    !migrationState.available.some((_migration) => _migration === migrationUntilToMigrate)
   ) {
     callbacks?.onMigrationFinished?.({
-      error: new Error(
-        `Migration with ${migrationUntilToMigrate} does not exists`
-      ),
+      error: new Error(`Migration with ${migrationUntilToMigrate} does not exists`),
     });
 
     return results;
   }
 
   if (
-    !migrationState.notExecuted.some(
-      (_migration) => _migration === migrationUntilToMigrate
-    )
+    !migrationState.notExecuted.some((_migration) => _migration === migrationUntilToMigrate)
   ) {
     callbacks?.onMigrationFinished?.({
       error: new Error(`Migration ${migrationUntilToMigrate} already executed`),
@@ -104,7 +106,7 @@ export const migrateUpTo = async (
 export const migrateOneUp = async (
   migration: string,
   migrator: Migrator,
-  callbacks?: MigrationCallbacks
+  callbacks?: MigrationCallbacks,
 ): Promise<MigrationExecutionResult> => {
   const migrationState = await migrator.loadMigrationState();
 
@@ -132,9 +134,7 @@ export const migrateOneUp = async (
 
   if (migrationState.getAllNotExecutedAfterCurrent()[0] !== migration) {
     const result = {
-      error: new Error(
-        `Can not execute migration ${migration} because there are not executed migrations before`
-      ),
+      error: new Error(`Can not execute migration ${migration} because there are not executed migrations before`),
     };
 
     callbacks?.onMigrationFinished?.(result);
@@ -146,7 +146,7 @@ export const migrateOneUp = async (
 
   const result = await executeMigrationUp(
     migrator.client,
-    migrationState.getMigrationFromName(migration)
+    migrationState.getMigrationFromName(migration),
   );
 
   callbacks?.onMigrationFinished?.(result);
@@ -156,7 +156,7 @@ export const migrateOneUp = async (
 
 const executeMigrationUp = async (
   client: Client,
-  migration: Migration
+  migration: Migration,
 ): Promise<MigrationExecutionResult> => {
   const result: MigrationExecutionResult = {
     migrationName: migration.name,

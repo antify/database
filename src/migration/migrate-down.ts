@@ -1,6 +1,12 @@
-import { Migration, MigrationExecutionResult } from '../types';
-import { Client } from '../client/Client';
-import { Migrator } from './migrator';
+import {
+  Migration, MigrationExecutionResult,
+} from '../types';
+import {
+  Client,
+} from '../client/Client';
+import {
+  Migrator,
+} from './migrator';
 
 export type MigrationCallbacks = {
   beforeMigrate?: (migrationName: string) => void;
@@ -13,7 +19,7 @@ export type MigrationCallbacks = {
  */
 export const migrateDownToEnd = async (
   migrator: Migrator,
-  callbacks?: MigrationCallbacks
+  callbacks?: MigrationCallbacks,
 ): Promise<void> => {
   // TODO:: implement me
 };
@@ -28,7 +34,7 @@ export const migrateDownTo = async (
   callbacks?: {
     beforeMigrate?: (migrationName: string) => void;
     onMigrationFinished?: (executionResult: MigrationExecutionResult) => void;
-  }
+  },
 ) => {
   // TODO:: implement me
 };
@@ -39,7 +45,7 @@ export const migrateDownTo = async (
 export const migrateDownUp = async (
   migration: string,
   migrator: Migrator,
-  callbacks?: MigrationCallbacks
+  callbacks?: MigrationCallbacks,
 ): Promise<MigrationExecutionResult | null> => {
   // TODO:: implement me
   return null;

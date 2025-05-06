@@ -1,9 +1,21 @@
-import { describe, test, expect } from 'vitest';
-import { SingleConnectionClient } from '../../client/SingleConnectionClient';
-import { dropDatabase } from '../drop-database';
-import { SingleConnectionDatabaseConfiguration } from '../../types';
-import { createDatabaseWithDummyRecord } from './utils';
-import { doesDatabaseExist } from '../../utils';
+import {
+  describe, test, expect,
+} from 'vitest';
+import {
+  SingleConnectionClient,
+} from '../../client/SingleConnectionClient';
+import {
+  dropDatabase,
+} from '../drop-database';
+import {
+  SingleConnectionDatabaseConfiguration,
+} from '../../types';
+import {
+  createDatabaseWithDummyRecord,
+} from './utils';
+import {
+  doesDatabaseExist,
+} from '../../utils';
 
 describe('Drop database test', async () => {
   test('Should drop a database', async () => {

@@ -1,4 +1,6 @@
-import { Fixture } from '../types';
+import {
+  Fixture,
+} from '../types';
 
 export const sortFixturesByDependency = (fixtures: Fixture[]): Fixture[] => {
   for (const fixture of fixtures) {
@@ -12,26 +14,20 @@ export const sortFixturesByDependency = (fixtures: Fixture[]): Fixture[] => {
       throw new Error(`Fixture ${fixture.name} can not depend on itself.`);
     }
 
-    const fixtureWhichDependsCurrentFixture = fixtures.find(
-      (fixtureToCheck) => {
-        return (
-          fixtureToCheck.name !== fixture.name &&
+    const fixtureWhichDependsCurrentFixture = fixtures.find((fixtureToCheck) => {
+      return (
+        fixtureToCheck.name !== fixture.name &&
           fixtureToCheck
             .dependsOn()
             .some((fixtureName) => fixtureName === fixture.name)
-        );
-      }
-    );
+      );
+    });
 
     if (
       fixtureWhichDependsCurrentFixture &&
-      dependencies.some(
-        (fixtureName) => fixtureName === fixtureWhichDependsCurrentFixture?.name
-      )
+      dependencies.some((fixtureName) => fixtureName === fixtureWhichDependsCurrentFixture?.name)
     ) {
-      throw new Error(
-        `Infinite depedency cyrcle detected. Fixture ${fixture.name} and ${fixtureWhichDependsCurrentFixture.name} depends on each other.`
-      );
+      throw new Error(`Infinite depedency cyrcle detected. Fixture ${fixture.name} and ${fixtureWhichDependsCurrentFixture.name} depends on each other.`);
     }
   }
 
@@ -46,9 +42,7 @@ export const sortFixturesByDependency = (fixtures: Fixture[]): Fixture[] => {
     const dependencies = fixture.dependsOn();
 
     for (const dependency of dependencies) {
-      const dependentFixture = fixtures.find(
-        (_fixture) => _fixture.name === dependency
-      );
+      const dependentFixture = fixtures.find((_fixture) => _fixture.name === dependency);
 
       if (dependentFixture && !visited.has(dependentFixture?.name || '')) {
         sort(dependentFixture);

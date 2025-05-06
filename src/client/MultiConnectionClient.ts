@@ -1,7 +1,15 @@
-import { type Connection, createConnection } from 'mongoose';
-import { MultiConnectionDatabaseConfiguration } from '../types';
-import { Client } from './Client';
-import {IllegalTenantError} from "../errors/IllegalTenantError";
+import {
+  type Connection, createConnection,
+} from 'mongoose';
+import {
+  MultiConnectionDatabaseConfiguration,
+} from '../types';
+import {
+  Client,
+} from './Client';
+import {
+  IllegalTenantError,
+} from '../errors/IllegalTenantError';
 
 export class MultiConnectionClient extends Client {
   private static instance: MultiConnectionClient;
@@ -15,9 +23,7 @@ export class MultiConnectionClient extends Client {
     this.configuration = configuration;
   }
 
-  public static getInstance(
-    configuration: MultiConnectionDatabaseConfiguration
-  ): MultiConnectionClient {
+  public static getInstance(configuration: MultiConnectionDatabaseConfiguration): MultiConnectionClient {
     if (!MultiConnectionClient.instance) {
       MultiConnectionClient.instance = new MultiConnectionClient(configuration);
     }
@@ -25,26 +31,28 @@ export class MultiConnectionClient extends Client {
     return MultiConnectionClient.instance;
   }
 
-	/**
+  /**
 	 * @param tenantId
 	 * @param strict => If true, before each multi connection get connected, it validates if the tenantId exists.
 	 * Be careful with this option, because it can cause a lot of database queries if the configuration.getTenants()
 	 * method is not cached.
 	 */
   async connect(tenantId: string, strict: boolean = false) {
-		if (strict) {
-			const tenants = await this.getConfiguration().fetchTenants();
+    if (strict) {
+      const tenants = await this.getConfiguration().fetchTenants();
 
-			if (!tenants.some((tenant) => tenant.id === tenantId)) {
-				throw new IllegalTenantError(tenantId);
-			}
-		}
+      if (!tenants.some((tenant) => tenant.id === tenantId)) {
+        throw new IllegalTenantError(tenantId);
+      }
+    }
 
     const dbName = `${this.databasePrefix}${tenantId}`;
 
     await this.createConnection();
 
-    this.connection = this.connection!.useDb(dbName, { useCache: true });
+    this.connection = this.connection!.useDb(dbName, {
+      useCache: true,
+    });
 
     return this;
   }
@@ -55,17 +63,13 @@ export class MultiConnectionClient extends Client {
     }
 
     this.connection = await createConnection(this.databaseUrl, {
-        // TODO:: check this - should not stay there
-        authSource: 'admin',
-      })
+      // TODO:: check this - should not stay there
+      authSource: 'admin',
+    })
       .asPromise();
 
     this.connection.on('error', (err) => {
-      console.log(
-        `Mongoose connection error: ${err} with connection info ${JSON.stringify(
-          process.env.MONGODB_URL
-        )}`
-      );
+      console.log(`Mongoose connection error: ${err} with connection info ${JSON.stringify(process.env.MONGODB_URL)}`);
       process.exit(0);
     });
 

@@ -1,6 +1,12 @@
-import { describe, test, expect } from 'vitest';
-import { MultiConnectionDatabaseConfiguration } from '../../types';
-import { MultiConnectionClient } from '../MultiConnectionClient';
+import {
+  describe, test, expect,
+} from 'vitest';
+import {
+  MultiConnectionDatabaseConfiguration,
+} from '../../types';
+import {
+  MultiConnectionClient,
+} from '../MultiConnectionClient';
 
 describe('MultiConnectionClient test', async () => {
   const connectionUrl = 'mongodb://root:root@127.0.0.1:27017';
@@ -15,7 +21,9 @@ describe('MultiConnectionClient test', async () => {
     const adminUtil = client.getConnection().db.admin();
     const result = await adminUtil.ping();
 
-    expect(result).toStrictEqual({ ok: 1 });
+    expect(result).toStrictEqual({
+      ok: 1,
+    });
   });
 
   test('should switch connection correctly', async () => {
@@ -29,6 +37,8 @@ describe('MultiConnectionClient test', async () => {
     const adminUtil = client.getConnection().db.admin();
     const result = await adminUtil.ping();
 
-    expect(result).toStrictEqual({ ok: 1 });
+    expect(result).toStrictEqual({
+      ok: 1,
+    });
   });
 });

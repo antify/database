@@ -1,6 +1,12 @@
-import { describe, test, expect } from 'vitest';
-import { sortFixturesByDependency } from '../depends-handler';
-import { generateFixtureMocks } from './utils';
+import {
+  describe, test, expect,
+} from 'vitest';
+import {
+  sortFixturesByDependency,
+} from '../depends-handler';
+import {
+  generateFixtureMocks,
+} from './utils';
 
 describe('Depends handler test', async () => {
   test('Should sort fixtures in correct order', async () => {
@@ -12,8 +18,13 @@ describe('Depends handler test', async () => {
       'five',
     ]);
 
-    fixtures[0].dependsOn = () => ['two'];
-    fixtures[2].dependsOn = () => ['four', 'five'];
+    fixtures[0].dependsOn = () => [
+      'two',
+    ];
+    fixtures[2].dependsOn = () => [
+      'four',
+      'five',
+    ];
 
     const sortedFixtures = sortFixturesByDependency(fixtures);
 
@@ -25,23 +36,30 @@ describe('Depends handler test', async () => {
   });
 
   test('Should not allow to depends on self', async () => {
-    const fixtures = generateFixtureMocks(['one']);
+    const fixtures = generateFixtureMocks([
+      'one',
+    ]);
 
-    fixtures[0].dependsOn = () => ['one'];
+    fixtures[0].dependsOn = () => [
+      'one',
+    ];
 
-    expect(() => sortFixturesByDependency(fixtures)).toThrowError(
-      'Fixture one can not depend on itself.'
-    );
+    expect(() => sortFixturesByDependency(fixtures)).toThrowError('Fixture one can not depend on itself.');
   });
 
   test('Should not allow infinite dependency recursion', async () => {
-    const fixtures = generateFixtureMocks(['one', 'two']);
+    const fixtures = generateFixtureMocks([
+      'one',
+      'two',
+    ]);
 
-    fixtures[0].dependsOn = () => ['two'];
-    fixtures[1].dependsOn = () => ['one'];
+    fixtures[0].dependsOn = () => [
+      'two',
+    ];
+    fixtures[1].dependsOn = () => [
+      'one',
+    ];
 
-    expect(() => sortFixturesByDependency(fixtures)).toThrowError(
-      'Infinite depedency cyrcle detected. Fixture one and two depends on each other.'
-    );
+    expect(() => sortFixturesByDependency(fixtures)).toThrowError('Infinite depedency cyrcle detected. Fixture one and two depends on each other.');
   });
 });

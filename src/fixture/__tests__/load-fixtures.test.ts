@@ -1,16 +1,28 @@
-import { describe, test, expect, vi, afterEach } from 'vitest';
-import { SingleConnectionClient } from '../../client/SingleConnectionClient';
+import {
+  describe, test, expect, vi, afterEach,
+} from 'vitest';
+import {
+  SingleConnectionClient,
+} from '../../client/SingleConnectionClient';
 import {
   defineFixture,
   SingleConnectionDatabaseConfiguration,
 } from '../../types';
-import { generateFixtureMocks } from './utils';
-import { LoadFixtureCallbacks, loadFixtures } from '../load-fixtures';
+import {
+  generateFixtureMocks,
+} from './utils';
+import {
+  LoadFixtureCallbacks, loadFixtures,
+} from '../load-fixtures';
 import * as fileHandler from '../file-handler';
 
 describe('Load fixtures test', async () => {
   const getMocks = () => {
-    const fixtureMocks = generateFixtureMocks(['test-1', 'test-2', 'test-3']);
+    const fixtureMocks = generateFixtureMocks([
+      'test-1',
+      'test-2',
+      'test-3',
+    ]);
     const databaseConfiguration: SingleConnectionDatabaseConfiguration = {
       databaseUrl: '',
       isSingleConnection: true,
@@ -18,7 +30,11 @@ describe('Load fixtures test', async () => {
     };
     const client = SingleConnectionClient.getInstance(databaseConfiguration);
 
-    return { client, fixtureMocks, databaseConfiguration };
+    return {
+      client,
+      fixtureMocks,
+      databaseConfiguration,
+    };
   };
 
   afterEach(() => {
@@ -26,23 +42,23 @@ describe('Load fixtures test', async () => {
   });
 
   test('Should load and execute all fixtures', async () => {
-    const { client, fixtureMocks } = getMocks();
+    const {
+      client, fixtureMocks,
+    } = getMocks();
     const callback: LoadFixtureCallbacks = {
       onLoadFixtureFinished(executionResult) {},
     };
     const onLoadFixtureFinishedSpy = vi.spyOn(
       callback,
-      'onLoadFixtureFinished'
+      'onLoadFixtureFinished',
     );
 
-    vi.spyOn(fileHandler, 'loadFixturesFromFilesystem').mockReturnValue(
-      fixtureMocks
-    );
+    vi.spyOn(fileHandler, 'loadFixturesFromFilesystem').mockReturnValue(fixtureMocks);
 
     const result = await loadFixtures(
-			client,
+      client,
       '',
-      callback
+      callback,
     );
 
     expect(result).toHaveLength(3);
@@ -51,31 +67,27 @@ describe('Load fixtures test', async () => {
     expect(result[2].fixtureName).toBe('test-3');
 
     expect(onLoadFixtureFinishedSpy.mock.calls).toHaveLength(3);
-    expect(onLoadFixtureFinishedSpy.mock.calls[0][0]).toHaveProperty(
-      'executionTimeInMs'
-    );
+    expect(onLoadFixtureFinishedSpy.mock.calls[0][0]).toHaveProperty('executionTimeInMs');
     expect(onLoadFixtureFinishedSpy.mock.calls[0][0]).toHaveProperty(
       'fixtureName',
-      'test-1'
+      'test-1',
     );
     expect(onLoadFixtureFinishedSpy.mock.calls[1][0]).toHaveProperty(
       'fixtureName',
-      'test-2'
+      'test-2',
     );
-    expect(onLoadFixtureFinishedSpy.mock.calls[1][0]).toHaveProperty(
-      'executionTimeInMs'
-    );
+    expect(onLoadFixtureFinishedSpy.mock.calls[1][0]).toHaveProperty('executionTimeInMs');
     expect(onLoadFixtureFinishedSpy.mock.calls[2][0]).toHaveProperty(
       'fixtureName',
-      'test-3'
+      'test-3',
     );
-    expect(onLoadFixtureFinishedSpy.mock.calls[2][0]).toHaveProperty(
-      'executionTimeInMs'
-    );
+    expect(onLoadFixtureFinishedSpy.mock.calls[2][0]).toHaveProperty('executionTimeInMs');
   });
 
   test('Should stop loading fixtures if an error occured', async () => {
-    const { client } = getMocks();
+    const {
+      client,
+    } = getMocks();
     const fixtureMocks = [
       defineFixture({
         name: 'test-1',
@@ -106,49 +118,47 @@ describe('Load fixtures test', async () => {
     };
     const onLoadFixtureFinishedSpy = vi.spyOn(
       callback,
-      'onLoadFixtureFinished'
+      'onLoadFixtureFinished',
     );
 
-    vi.spyOn(fileHandler, 'loadFixturesFromFilesystem').mockReturnValue(
-      fixtureMocks
-    );
+    vi.spyOn(fileHandler, 'loadFixturesFromFilesystem').mockReturnValue(fixtureMocks);
 
     await loadFixtures(
-			client,
+      client,
       '',
-      callback
+      callback,
     );
 
     expect(onLoadFixtureFinishedSpy.mock.calls).toHaveLength(2);
-    expect(onLoadFixtureFinishedSpy.mock.calls[0][0]).toHaveProperty(
-      'executionTimeInMs'
-    );
+    expect(onLoadFixtureFinishedSpy.mock.calls[0][0]).toHaveProperty('executionTimeInMs');
     expect(onLoadFixtureFinishedSpy.mock.calls[0][0]).toHaveProperty(
       'fixtureName',
-      'test-1'
+      'test-1',
     );
     expect(onLoadFixtureFinishedSpy.mock.calls[1][0]).toHaveProperty(
       'error',
-      new Error('Some failure happened')
+      new Error('Some failure happened'),
     );
   });
 
   test('Should show info if there are no fixtures to load', async () => {
-    const { client, fixtureMocks } = getMocks();
+    const {
+      client, fixtureMocks,
+    } = getMocks();
     const callback: LoadFixtureCallbacks = {
       onLoadFixtureFinished(executionResult) {},
     };
     const onLoadFixtureFinishedSpy = vi.spyOn(
       callback,
-      'onLoadFixtureFinished'
+      'onLoadFixtureFinished',
     );
 
     vi.spyOn(fileHandler, 'loadFixturesFromFilesystem').mockReturnValue([]);
 
     const result = await loadFixtures(
-			client,
+      client,
       '',
-      callback
+      callback,
     );
 
     expect(result).toHaveLength(0);
@@ -156,7 +166,7 @@ describe('Load fixtures test', async () => {
     expect(onLoadFixtureFinishedSpy.mock.calls).toHaveLength(1);
     expect(onLoadFixtureFinishedSpy.mock.calls[0][0]).toHaveProperty(
       'info',
-      'No fixtures to load'
+      'No fixtures to load',
     );
   });
 });

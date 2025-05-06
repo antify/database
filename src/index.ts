@@ -1,10 +1,22 @@
-export { MultiConnectionClient } from './client/MultiConnectionClient';
-export { SingleConnectionClient } from './client/SingleConnectionClient';
-export { Client } from './client/Client';
-export { truncateAllCollections, truncateCollections } from './client/utils';
+export {
+  MultiConnectionClient,
+} from './client/MultiConnectionClient';
+export {
+  SingleConnectionClient,
+} from './client/SingleConnectionClient';
+export {
+  Client,
+} from './client/Client';
+export {
+  truncateAllCollections, truncateCollections,
+} from './client/utils';
 export * from './types';
-export { loadDatabaseConfiguration } from './config';
-export { getDatabaseClient } from './client';
+export {
+  loadDatabaseConfiguration,
+} from './config';
+export {
+  getDatabaseClient,
+} from './client';
 
 export * from './migration/file-handler';
 // export * from './migration/migrate-down';
@@ -20,9 +32,13 @@ export * from './fixture/utils';
 
 export * from './drop-database/drop-database';
 export * from './drop-database/drop-database-multi';
-export { doesDatabaseExist } from './utils';
+export {
+  doesDatabaseExist,
+} from './utils';
 
 export * from './config';
-export {disconnect, connections} from 'mongoose';
+export {
+  disconnect, connections,
+} from 'mongoose';
 
 export * from './errors/IllegalTenantError';

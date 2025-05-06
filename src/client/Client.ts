@@ -1,46 +1,44 @@
-import {Model, Schema, type Connection, InferSchemaType} from 'mongoose';
-import {defineSchema, DefineSchemaCb, SchemaDefinition} from "../types";
+import {
+  Model, Schema, type Connection, InferSchemaType,
+} from 'mongoose';
+import {
+  defineSchema, DefineSchemaCb, SchemaDefinition,
+} from '../types';
 
 export abstract class Client {
-	protected schemas: Record<string, Schema> = {};
-	protected connection: Connection | null = null;
+  protected schemas: Record<string, Schema> = {};
+  protected connection: Connection | null = null;
 
-	constructor(protected databaseUrl: string) {
-	}
+  constructor(protected databaseUrl: string) {
+  }
 
-	getSchema<T>(schemaName: string): Schema {
-		if (!this.schemas[schemaName]) {
-			this.schemas[schemaName] = new Schema<T>();
-		}
+  getSchema<T>(schemaName: string): Schema {
+    if (!this.schemas[schemaName]) {
+      this.schemas[schemaName] = new Schema<T>();
+    }
 
-		return this.schemas[schemaName];
-	}
+    return this.schemas[schemaName];
+  }
 
-	getModel<TSchema extends Schema>(
-		defineSchema: DefineSchemaCb<TSchema>
-	): Model<InferSchemaType<TSchema>> {
-		if (this.connection === null) {
-			throw new Error(
-				'This connection is not initialized. Call "connect" first.'
-			);
-		}
+  getModel<TSchema extends Schema>(defineSchema: DefineSchemaCb<TSchema>): Model<InferSchemaType<TSchema>> {
+    if (this.connection === null) {
+      throw new Error('This connection is not initialized. Call "connect" first.');
+    }
 
-		const schemaDefinition = defineSchema();
+    const schemaDefinition = defineSchema();
 
-		if (this.connection.models[schemaDefinition.name]) {
-			return this.connection.models[schemaDefinition.name];
-		}
+    if (this.connection.models[schemaDefinition.name]) {
+      return this.connection.models[schemaDefinition.name];
+    }
 
-		return this.connection.model<InferSchemaType<TSchema>>(schemaDefinition.name, schemaDefinition.schema);
-	}
+    return this.connection.model<InferSchemaType<TSchema>>(schemaDefinition.name, schemaDefinition.schema);
+  }
 
-	getConnection(): Connection {
-		if (this.connection === null) {
-			throw new Error(
-				'This connection is not initialized. Call "connect" first.'
-			);
-		}
+  getConnection(): Connection {
+    if (this.connection === null) {
+      throw new Error('This connection is not initialized. Call "connect" first.');
+    }
 
-		return this.connection;
-	}
+    return this.connection;
+  }
 }

@@ -1,6 +1,12 @@
-import { createConnection } from 'mongoose';
-import { SingleConnectionDatabaseConfiguration } from '../types';
-import { Client } from './Client';
+import {
+  createConnection,
+} from 'mongoose';
+import {
+  SingleConnectionDatabaseConfiguration,
+} from '../types';
+import {
+  Client,
+} from './Client';
 
 export class SingleConnectionClient extends Client {
   private static instance: SingleConnectionClient;
@@ -12,13 +18,9 @@ export class SingleConnectionClient extends Client {
     this.configuration = configuration;
   }
 
-  public static getInstance(
-    configuration: SingleConnectionDatabaseConfiguration
-  ): SingleConnectionClient {
+  public static getInstance(configuration: SingleConnectionDatabaseConfiguration): SingleConnectionClient {
     if (!SingleConnectionClient.instance) {
-      SingleConnectionClient.instance = new SingleConnectionClient(
-        configuration
-      );
+      SingleConnectionClient.instance = new SingleConnectionClient(configuration);
     }
 
     return SingleConnectionClient.instance;
@@ -27,9 +29,9 @@ export class SingleConnectionClient extends Client {
   async connect(): Promise<SingleConnectionClient> {
     if (!this.connection) {
       this.connection = await createConnection(this.databaseUrl, {
-				// TODO:: check this - should not stay there
-				authSource: 'admin',
-			})
+        // TODO:: check this - should not stay there
+        authSource: 'admin',
+      })
         .asPromise();
 
       this.connection.on('error', (err) => {

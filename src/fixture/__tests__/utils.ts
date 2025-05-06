@@ -1,13 +1,13 @@
-import { defineFixture } from '../../types';
+import {
+  defineFixture,
+} from '../../types';
 
 export const generateFixtureMocks = (nameList: string[]) => {
-  return nameList.map((name) =>
-    defineFixture({
-      name,
-      async load() {},
-      dependsOn() {
-        return [];
-      },
-    })
-  );
+  return nameList.map((name) => defineFixture({
+    name,
+    async load() {},
+    dependsOn() {
+      return [];
+    },
+  }));
 };

@@ -1,45 +1,65 @@
-import {describe, test, expect} from 'vitest';
-import {getFilenames} from '../utils';
+import {
+  describe, test, expect,
+} from 'vitest';
+import {
+  getFilenames,
+} from '../utils';
 import path from 'path';
-import {fileURLToPath} from 'url';
+import {
+  fileURLToPath,
+} from 'url';
 import fs from 'fs';
 
 describe('Utils tests', async () => {
-	describe('Test getFilenames function', async () => {
-		function createTestFiles(absoluteDir: string, fileNames: string[]) {
-			fs.rmSync(absoluteDir, {
-				recursive: true,
-				force: true,
-			});
-			fs.mkdirSync(absoluteDir, {recursive: true});
+  describe('Test getFilenames function', async () => {
+    function createTestFiles(absoluteDir: string, fileNames: string[]) {
+      fs.rmSync(absoluteDir, {
+        recursive: true,
+        force: true,
+      });
+      fs.mkdirSync(absoluteDir, {
+        recursive: true,
+      });
 
-			fileNames.forEach((fileName) => {
-				fs.writeFileSync(
-					path.join(absoluteDir, fileName),
-					'// Test content'
-				);
-			});
-		}
+      fileNames.forEach((fileName) => {
+        fs.writeFileSync(
+          path.join(absoluteDir, fileName),
+          '// Test content',
+        );
+      });
+    }
 
-		function getAbsoluteDir(dirName: string) {
-			const __dirname = path.dirname(fileURLToPath(new URL(import.meta.url)));
-			return path.join(__dirname, dirName);
-		}
+    function getAbsoluteDir(dirName: string) {
+      const __dirname = path.dirname(fileURLToPath(new URL(import.meta.url)));
 
-		test('Should handle an empty directory correctly', async () => {
-			const absoluteDir = getAbsoluteDir('files')
+      return path.join(__dirname, dirName);
+    }
 
-			createTestFiles(absoluteDir, []);
+    test('Should handle an empty directory correctly', async () => {
+      const absoluteDir = getAbsoluteDir('files');
 
-			expect(getFilenames(absoluteDir)).toStrictEqual([])
-		});
+      createTestFiles(absoluteDir, []);
 
-		test('Should only load *.ts, *.mjs, *.js file types', async () => {
-			const absoluteDir = getAbsoluteDir('files')
+      expect(getFilenames(absoluteDir)).toStrictEqual([]);
+    });
 
-			createTestFiles(absoluteDir, ['schema-1.ts', 'schema-2.js', 'schema-3.mjs', 'schema-4.d.ts', 'schema-5.txt', 'schema-6']);
+    test('Should only load *.ts, *.mjs, *.js file types', async () => {
+      const absoluteDir = getAbsoluteDir('files');
 
-			expect(getFilenames(absoluteDir)).toStrictEqual(['schema-1', 'schema-2', 'schema-3'])
-		});
-	})
+      createTestFiles(absoluteDir, [
+        'schema-1.ts',
+        'schema-2.js',
+        'schema-3.mjs',
+        'schema-4.d.ts',
+        'schema-5.txt',
+        'schema-6',
+      ]);
+
+      expect(getFilenames(absoluteDir)).toStrictEqual([
+        'schema-1',
+        'schema-2',
+        'schema-3',
+      ]);
+    });
+  });
 });

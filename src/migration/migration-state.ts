@@ -1,9 +1,21 @@
-import { Client } from '../client/Client';
-import { DatabaseConfiguration, Migration } from '../types';
-import { loadMigrationsFromFilesystem } from './file-handler';
-import { getMigrationDocuments } from './utils';
-import {MultiConnectionClient} from '../client/MultiConnectionClient';
-import {SingleConnectionClient} from '../client/SingleConnectionClient';
+import {
+  Client,
+} from '../client/Client';
+import {
+  DatabaseConfiguration, Migration,
+} from '../types';
+import {
+  loadMigrationsFromFilesystem,
+} from './file-handler';
+import {
+  getMigrationDocuments,
+} from './utils';
+import {
+  MultiConnectionClient,
+} from '../client/MultiConnectionClient';
+import {
+  SingleConnectionClient,
+} from '../client/SingleConnectionClient';
 
 export class MigrationState {
   /**
@@ -73,48 +85,42 @@ export class MigrationState {
 
   private findItemsNotIn = (
     firtList: string[],
-    secondList: string[]
+    secondList: string[],
   ): string[] => {
     return firtList
-      .map((first) =>
-        !secondList.some((second) => second === first) ? first : null
-      )
+      .map((first) => !secondList.some((second) => second === first) ? first : null)
       .filter((item) => !!item) as string[];
   };
 
   /**
    * Return all not executed migrations which are older than the current migration version
    */
-  getAllNotExecutedAfterCurrent = (): string[] =>
-    this.currentVersion
-      ? this.getAllNotExecutedAfter(this.currentVersion)
-      : this.notExecuted;
+  getAllNotExecutedAfterCurrent = (): string[] => this.currentVersion
+    ? this.getAllNotExecutedAfter(this.currentVersion)
+    : this.notExecuted;
 
   /**
    * Return all not executed migrations which are older than the given migration version
    */
   getAllNotExecutedAfter = (
     migration: string,
-    beginWithGivenMigration: boolean = false
-  ): string[] =>
-    this.getMigrationsAfter(
-      this.notExecuted,
-      migration,
-      beginWithGivenMigration
-    );
+    beginWithGivenMigration: boolean = false,
+  ): string[] => this.getMigrationsAfter(
+    this.notExecuted,
+    migration,
+    beginWithGivenMigration,
+  );
 
   getMigrationsAfter = (
     migrations: string[],
     migration: string,
-    beginWithGivenMigration: boolean = false
+    beginWithGivenMigration: boolean = false,
   ): string[] => {
     const migrationsWithGivenMigration = [
       migration,
       ...new Set(migrations),
     ].sort();
-    const migrationIndex = migrationsWithGivenMigration.findIndex(
-      (_migration) => _migration === migration
-    );
+    const migrationIndex = migrationsWithGivenMigration.findIndex((_migration) => _migration === migration);
 
     return migrationsWithGivenMigration.filter((_migration, index) => {
       if (beginWithGivenMigration) {
@@ -126,9 +132,7 @@ export class MigrationState {
   };
 
   getMigrationFromName(migrationName: string): Migration {
-    const migration = this.migrations.find(
-      (_migration) => _migration.name === migrationName
-    );
+    const migration = this.migrations.find((_migration) => _migration.name === migrationName);
 
     if (!migration) {
       throw new Error(`Migration with name ${migrationName} does not exists`);
@@ -140,12 +144,12 @@ export class MigrationState {
 
 export const makeMigrationState = async (
   client: SingleConnectionClient | MultiConnectionClient,
-  projectRootDir: string
+  projectRootDir: string,
 ): Promise<MigrationState> => {
   // defineMigrationSchema();
 
   return new MigrationState(
     loadMigrationsFromFilesystem(projectRootDir, client.getConfiguration()),
-    (await getMigrationDocuments(client)).map((item) => item.file)
+    (await getMigrationDocuments(client)).map((item) => item.file),
   );
 };
