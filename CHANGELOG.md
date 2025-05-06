@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/antify/database/compare/v1.3.0...v2.0.0) (2025-05-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* Change schema structure to keep type safety and auto transpile
+
+### Features
+
+* Add strict mode for MultiConnectionClients ([3238e52](https://github.com/antify/database/commit/3238e524b00ad394108342760f50d8b467db4b60))
+* Change schema structure to keep type safety and auto transpile ([82fd226](https://github.com/antify/database/commit/82fd2265eb0eaa3fe597b4507902fdf9d415e48f))
+
 ## [1.3.0](https://github.com/antify/database/compare/v1.2.0...v1.3.0) (2025-03-12)
 
 
