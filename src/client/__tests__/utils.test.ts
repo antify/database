@@ -2,15 +2,10 @@ import { describe, test, expect, beforeEach, beforeAll } from 'vitest';
 import { MultiConnectionDatabaseConfiguration } from '../../types';
 import { MultiConnectionClient } from '../MultiConnectionClient';
 import { truncateAllCollections, truncateCollections } from '../utils';
-import { Model } from 'mongoose';
+import { Model, Schema } from 'mongoose';
 
 describe('utils test', async () => {
   const connectionUrl = 'mongodb://root:root@127.0.0.1:27017';
-  const testSchema = {
-    name: {
-      type: String,
-    },
-  };
   const testData = [
     {
       name: 'foo',
@@ -34,16 +29,21 @@ describe('utils test', async () => {
       'utils_tests'
     );
 
-    collections.forEach((collection) => client.getSchema(collection).add(testSchema));
-
-    models = collections.map((collection) => client.getModel(collection));
+    models = collections.map((collection) => client.getModel(() => ({
+			name: collection,
+			schema: new Schema({
+				name: {
+					type: String,
+				},
+			})
+		})));
   });
 
   beforeEach(async () => {
     // Truncate all collections
     await Promise.all(
       collections.map(async (collection) => {
-        await client.getConnection().db.dropCollection(collection);
+        await client.getConnection().db?.dropCollection(collection);
       })
     );
 

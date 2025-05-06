@@ -1,23 +1,18 @@
 import {SingleConnectionClient} from './client/SingleConnectionClient';
 import {MultiConnectionClient} from './client/MultiConnectionClient';
-import {loadDatabaseConfiguration} from './config';
-import {loadSchemas} from './schema/load-schemas';
+import {DatabaseConfigurations} from "./types";
 
-export async function getDatabaseClient(
-	contextId: string,
-	rootDir: string = process.cwd()
-): Promise<SingleConnectionClient | MultiConnectionClient> {
-	const configuration = loadDatabaseConfiguration(true, rootDir)[contextId];
+export function getDatabaseClient(
+	databaseId: string,
+	config: DatabaseConfigurations,
+): SingleConnectionClient | MultiConnectionClient {
+	const configuration = config[databaseId];
 
 	if (!configuration) {
-		throw new Error(`Configuration with name ${contextId} does not exists`);
+		throw new Error(`Configuration with name ${databaseId} does not exists`);
 	}
 
-	const client = configuration.isSingleConnection
+	return configuration.isSingleConnection
 		? SingleConnectionClient.getInstance(configuration)
 		: MultiConnectionClient.getInstance(configuration);
-
-	await loadSchemas(client, rootDir);
-
-	return client;
 }

@@ -18,11 +18,11 @@ export * from './fixture/load-fixtures';
 export * from './fixture/load-fixtures-multi';
 export * from './fixture/utils';
 
-export * from './schema/load-schemas';
-
 export * from './drop-database/drop-database';
 export * from './drop-database/drop-database-multi';
 export { doesDatabaseExist } from './utils';
 
 export * from './config';
 export {disconnect, connections} from 'mongoose';
+
+export * from './errors/IllegalTenantError';

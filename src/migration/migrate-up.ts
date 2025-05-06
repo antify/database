@@ -1,6 +1,7 @@
-import { Migration, MigrationExecutionResult, MigrationSchema } from '../types';
+import { Migration, MigrationExecutionResult } from '../types';
 import { Client } from '../client/Client';
 import { Migrator } from './migrator';
+import {defineMigrationSchema} from "./utils";
 
 export type MigrationCallbacks = {
   beforeMigrate?: (migrationName: string) => void;
@@ -171,7 +172,7 @@ const executeMigrationUp = async (
     result.error = e as Error;
   }
 
-  await client.getModel<MigrationSchema>('migrations').create({
+  await client.getModel(defineMigrationSchema).create({
     file: migration.name,
     executedOn: new Date(),
   });

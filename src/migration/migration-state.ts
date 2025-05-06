@@ -1,7 +1,7 @@
 import { Client } from '../client/Client';
 import { DatabaseConfiguration, Migration } from '../types';
 import { loadMigrationsFromFilesystem } from './file-handler';
-import { getMigrationDocuments, initMigrationSchema } from './utils';
+import { getMigrationDocuments } from './utils';
 import {MultiConnectionClient} from '../client/MultiConnectionClient';
 import {SingleConnectionClient} from '../client/SingleConnectionClient';
 
@@ -142,7 +142,7 @@ export const makeMigrationState = async (
   client: SingleConnectionClient | MultiConnectionClient,
   projectRootDir: string
 ): Promise<MigrationState> => {
-  initMigrationSchema(client);
+  // defineMigrationSchema();
 
   return new MigrationState(
     loadMigrationsFromFilesystem(projectRootDir, client.getConfiguration()),

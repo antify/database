@@ -1,28 +1,32 @@
-import { DatabaseConfiguration, MigrationSchema } from '../types';
-import { join } from 'pathe';
-import { Client } from '../client/Client';
+import {DatabaseConfiguration, DefineSchemaCb} from '../types';
+import {join} from 'pathe';
+import {Client} from '../client/Client';
+import {Schema} from 'mongoose';
 
 export const getMigrationDocuments = async (client: Client) => {
-  return client.getModel<MigrationSchema>('migrations').find({}).sort('file');
+	return client.getModel(defineMigrationSchema).find({}).sort('file');
 };
 
-export const initMigrationSchema = (client: Client) => {
-  client.getSchema('migrations').add({
-    file: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    executedOn: {
-      type: Date,
-      required: false,
-    },
-  });
+export const defineMigrationSchema: DefineSchemaCb<any> = () => {
+	return {
+		name: 'migrations',
+		schema: new Schema({
+			file: {
+				type: String,
+				required: true,
+				unique: true,
+			},
+			executedOn: {
+				type: Date,
+				required: false,
+			},
+		})
+	}
 };
 
 export const getAbsoluteMigrationDir = (
-  databaseConfig: DatabaseConfiguration,
-  projectRootDir: string
+	databaseConfig: DatabaseConfiguration,
+	projectRootDir: string
 ) => {
-  return join(projectRootDir, databaseConfig.migrationDir);
+	return join(projectRootDir, databaseConfig.migrationDir);
 };

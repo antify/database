@@ -1,36 +1,46 @@
-import { Model, Schema, type Connection } from 'mongoose';
+import {Model, Schema, type Connection, InferSchemaType} from 'mongoose';
+import {defineSchema, DefineSchemaCb, SchemaDefinition} from "../types";
 
-export class Client {
-  protected schemas: Record<string, Schema> = {};
-  protected connection: Connection | null = null;
+export abstract class Client {
+	protected schemas: Record<string, Schema> = {};
+	protected connection: Connection | null = null;
 
-  constructor(protected databaseUrl: string) {}
+	constructor(protected databaseUrl: string) {
+	}
 
-  getSchema<T>(schemaName: string): Schema {
-    if (!this.schemas[schemaName]) {
-      this.schemas[schemaName] = new Schema<T>();
-    }
+	getSchema<T>(schemaName: string): Schema {
+		if (!this.schemas[schemaName]) {
+			this.schemas[schemaName] = new Schema<T>();
+		}
 
-    return this.schemas[schemaName];
-  }
+		return this.schemas[schemaName];
+	}
 
-  getModel<T>(modelName: string): Model<T> {
-    if (this.connection === null) {
-      throw new Error(
-        'This connection is not initialized. Call "connect" first.'
-      );
-    }
+	getModel<TSchema extends Schema>(
+		defineSchema: DefineSchemaCb<TSchema>
+	): Model<InferSchemaType<TSchema>> {
+		if (this.connection === null) {
+			throw new Error(
+				'This connection is not initialized. Call "connect" first.'
+			);
+		}
 
-    return this.connection.model<T>(modelName, this.schemas[modelName]);
-  }
+		const schemaDefinition = defineSchema();
 
-  getConnection(): Connection {
-    if (this.connection === null) {
-      throw new Error(
-        'This connection is not initialized. Call "connect" first.'
-      );
-    }
+		if (this.connection.models[schemaDefinition.name]) {
+			return this.connection.models[schemaDefinition.name];
+		}
 
-    return this.connection;
-  }
+		return this.connection.model<InferSchemaType<TSchema>>(schemaDefinition.name, schemaDefinition.schema);
+	}
+
+	getConnection(): Connection {
+		if (this.connection === null) {
+			throw new Error(
+				'This connection is not initialized. Call "connect" first.'
+			);
+		}
+
+		return this.connection;
+	}
 }

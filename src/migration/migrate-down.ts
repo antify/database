@@ -1,4 +1,4 @@
-import { Migration, MigrationExecutionResult, MigrationSchema } from '../types';
+import { Migration, MigrationExecutionResult } from '../types';
 import { Client } from '../client/Client';
 import { Migrator } from './migrator';
 
