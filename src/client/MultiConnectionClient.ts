@@ -1,6 +1,7 @@
 import { type Connection, createConnection } from 'mongoose';
 import { MultiConnectionDatabaseConfiguration } from '../types';
 import { Client } from './Client';
+import {IllegalTenantError} from "../errors/IllegalTenantError";
 
 export class MultiConnectionClient extends Client {
   private static instance: MultiConnectionClient;
@@ -24,7 +25,21 @@ export class MultiConnectionClient extends Client {
     return MultiConnectionClient.instance;
   }
 
-  async connect(tenantId: string) {
+	/**
+	 * @param tenantId
+	 * @param strict => If true, before each multi connection get connected, it validates if the tenantId exists.
+	 * Be careful with this option, because it can cause a lot of database queries if the configuration.getTenants()
+	 * method is not cached.
+	 */
+  async connect(tenantId: string, strict: boolean = false) {
+		if (strict) {
+			const tenants = await this.getConfiguration().fetchTenants();
+
+			if (!tenants.some((tenant) => tenant.id === tenantId)) {
+				throw new IllegalTenantError(tenantId);
+			}
+		}
+
     const dbName = `${this.databasePrefix}${tenantId}`;
 
     await this.createConnection();
