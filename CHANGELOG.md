@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/antify/database/compare/v2.0.0...v3.0.0) (2025-08-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* You have to load your fixtures by yourself
+
+### Features
+
+* Expect loaded fixtures instead of projectRootDir for loading fixtures ([bc6dcac](https://github.com/antify/database/commit/bc6dcac1fb385b4eafc70fa606f7250b91344921))
+
 ## [2.0.0](https://github.com/antify/database/compare/v1.3.0...v2.0.0) (2025-05-06)
 
 
