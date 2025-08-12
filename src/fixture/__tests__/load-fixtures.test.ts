@@ -57,7 +57,7 @@ describe('Load fixtures test', async () => {
 
     const result = await loadFixtures(
       client,
-      '',
+      fixtureMocks,
       callback,
     );
 
@@ -125,7 +125,7 @@ describe('Load fixtures test', async () => {
 
     await loadFixtures(
       client,
-      '',
+      fixtureMocks,
       callback,
     );
 
@@ -143,7 +143,7 @@ describe('Load fixtures test', async () => {
 
   test('Should show info if there are no fixtures to load', async () => {
     const {
-      client, fixtureMocks,
+      client,
     } = getMocks();
     const callback: LoadFixtureCallbacks = {
       onLoadFixtureFinished(executionResult) {},
@@ -157,7 +157,7 @@ describe('Load fixtures test', async () => {
 
     const result = await loadFixtures(
       client,
-      '',
+      [],
       callback,
     );
 

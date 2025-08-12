@@ -3,9 +3,6 @@ import {
   Fixture,
 } from '../types';
 import {
-  loadFixturesFromFilesystem,
-} from './file-handler';
-import {
   Client,
 } from '../client/Client';
 import {
@@ -25,14 +22,10 @@ export type LoadFixtureCallbacks = {
 
 export const loadFixtures = async (
   client: SingleConnectionClient | MultiConnectionClient,
-  projectRootDir: string,
+  fixtures: Fixture[],
   callbacks?: LoadFixtureCallbacks,
 ): Promise<LoadFixtureExecutionResult[]> => {
   const results: LoadFixtureExecutionResult[] = [];
-  let fixtures = loadFixturesFromFilesystem(
-    projectRootDir,
-    client.getConfiguration(),
-  );
 
   if (fixtures.length <= 0) {
     callbacks?.onLoadFixtureFinished?.({

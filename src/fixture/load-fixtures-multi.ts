@@ -1,11 +1,13 @@
-import {
+import type {
+  Fixture,
   LoadFixtureResult,
 } from '../types';
-import {
+import type {
   MultiConnectionClient,
 } from '../client/MultiConnectionClient';
 import {
-  LoadFixtureCallbacks, loadFixtures,
+  type LoadFixtureCallbacks,
+  loadFixtures,
 } from './load-fixtures';
 
 export type MultiConnectionLoadFixtureCallbacks = {
@@ -15,7 +17,7 @@ export type MultiConnectionLoadFixtureCallbacks = {
 
 export const loadFixturesMulticonnection = async (
   client: MultiConnectionClient,
-  projectRootDir: string,
+  fixtures: Fixture[],
   callbacks?: MultiConnectionLoadFixtureCallbacks,
 ): Promise<void> => {
   const tenants = await client.getConfiguration().fetchTenants();
@@ -27,7 +29,7 @@ export const loadFixturesMulticonnection = async (
 
     const results = await loadFixtures(
       client,
-      projectRootDir,
+      fixtures,
       callbacks,
     );
 
