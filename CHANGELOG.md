@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/antify/database/compare/v3.0.0...v3.1.0) (2025-11-05)
+
+
+### Features
+
+* Add serverless support to keep amount of connections low as possible ([72cd328](https://github.com/antify/database/commit/72cd328b3974502682b588303e37ca8fa26df6d2))
+
 ## [3.0.0](https://github.com/antify/database/compare/v2.0.0...v3.0.0) (2025-08-12)
 
 
