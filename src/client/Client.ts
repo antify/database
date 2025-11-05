@@ -2,7 +2,7 @@ import {
   Model, Schema, type Connection, InferSchemaType,
 } from 'mongoose';
 import {
-  defineSchema, DefineSchemaCb, SchemaDefinition,
+  DefineSchemaCb,
 } from '../types';
 
 export abstract class Client {

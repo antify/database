@@ -8,13 +8,14 @@ import {
   Client,
 } from './Client';
 
+const GLOBAL_CONNECTION_KEY = '__single_mongoose_connection__';
+
 export class SingleConnectionClient extends Client {
   private static instance: SingleConnectionClient;
   private configuration: SingleConnectionDatabaseConfiguration;
 
   private constructor(configuration: SingleConnectionDatabaseConfiguration) {
     super(configuration.databaseUrl);
-
     this.configuration = configuration;
   }
 
@@ -27,18 +28,17 @@ export class SingleConnectionClient extends Client {
   }
 
   async connect(): Promise<SingleConnectionClient> {
-    if (!this.connection) {
-      this.connection = await createConnection(this.databaseUrl, {
-        // TODO:: check this - should not stay there
+    if (!(globalThis as any)[GLOBAL_CONNECTION_KEY]) {
+      (globalThis as any)[GLOBAL_CONNECTION_KEY] = await createConnection(this.databaseUrl, {
         authSource: 'admin',
-      })
-        .asPromise();
+      }).asPromise();
 
-      this.connection.on('error', (err) => {
-        console.error(`Mongoose connection error: ${err}`);
-        process.exit(0);
-      });
+      if (process.env.ANTIFY_DATABASE_DEBUG_CONNECTIONS === 'true') {
+        console.info('Antify database debug: Connected to single connection');
+      }
     }
+
+    this.connection = (globalThis as any)[GLOBAL_CONNECTION_KEY];
 
     return this;
   }

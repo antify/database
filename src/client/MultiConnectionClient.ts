@@ -1,5 +1,5 @@
 import {
-  type Connection, createConnection,
+  createConnection,
 } from 'mongoose';
 import {
   MultiConnectionDatabaseConfiguration,
@@ -11,6 +11,8 @@ import {
   IllegalTenantError,
 } from '../errors/IllegalTenantError';
 
+const GLOBAL_CONNECTION_PREFIX = '__multi_mongoose_connection_';
+
 export class MultiConnectionClient extends Client {
   private static instance: MultiConnectionClient;
   private configuration: MultiConnectionDatabaseConfiguration;
@@ -18,7 +20,6 @@ export class MultiConnectionClient extends Client {
 
   private constructor(configuration: MultiConnectionDatabaseConfiguration) {
     super(configuration.databaseUrl);
-
     this.databasePrefix = configuration.databasePrefix || 'tenant_';
     this.configuration = configuration;
   }
@@ -31,12 +32,6 @@ export class MultiConnectionClient extends Client {
     return MultiConnectionClient.instance;
   }
 
-  /**
-	 * @param tenantId
-	 * @param strict => If true, before each multi connection get connected, it validates if the tenantId exists.
-	 * Be careful with this option, because it can cause a lot of database queries if the configuration.getTenants()
-	 * method is not cached.
-	 */
   async connect(tenantId: string, strict: boolean = false) {
     if (strict) {
       const tenants = await this.getConfiguration().fetchTenants();
@@ -46,34 +41,25 @@ export class MultiConnectionClient extends Client {
       }
     }
 
-    const dbName = `${this.databasePrefix}${tenantId}`;
+    const globalKey = `${GLOBAL_CONNECTION_PREFIX}${tenantId}`;
 
-    await this.createConnection();
+    if (!(globalThis as any)[globalKey]) {
+      const baseConnection = await createConnection(this.databaseUrl, {
+        authSource: 'admin',
+      }).asPromise();
 
-    this.connection = this.connection!.useDb(dbName, {
-      useCache: true,
-    });
+      (globalThis as any)[globalKey] = baseConnection.useDb(`${this.databasePrefix}${tenantId}`, {
+        useCache: true,
+      });
 
-    return this;
-  }
-
-  async createConnection(): Promise<Connection> {
-    if (this.connection) {
-      return this.connection;
+      if (process.env.ANTIFY_DATABASE_DEBUG_CONNECTIONS === 'true') {
+        console.log(`Antify database debug: Connected to multi connection for tenant ${tenantId}`);
+      }
     }
 
-    this.connection = await createConnection(this.databaseUrl, {
-      // TODO:: check this - should not stay there
-      authSource: 'admin',
-    })
-      .asPromise();
+    this.connection = (globalThis as any)[globalKey];
 
-    this.connection.on('error', (err) => {
-      console.log(`Mongoose connection error: ${err} with connection info ${JSON.stringify(process.env.MONGODB_URL)}`);
-      process.exit(0);
-    });
-
-    return this.connection;
+    return this;
   }
 
   getConfiguration(): MultiConnectionDatabaseConfiguration {

@@ -1,17 +1,42 @@
 # Database
 
-It does:
+A Node.js library for managing database migrations and multi-tenant database connections. It supports creating, running,
+and rolling back migrations, as well as managing models across multiple database instances.
 
-- [ ] Write docs
+It also is optimized for running on serverless environments like AWS Lambda or Vercel by 
+reusing database connections instead of creating new ones on every function call.
+
+TODO:
 - [ ] Improve security (root user for tenants is not good)
 - [ ] Implement rollback mechanism on error
 - [ ] Implement migrate down
-- [ ] Make migrations dir in configuration not required
-	This saves calling it manual all time.
+- [ ] Make migrations dir in configuration not required.
+  This saves calling it manual all time.
 
 ## Usage
 
-TODO::
+To use the library, first install it with \`npm install @antify/database\`. Then import the functions and initialize a database connection:
+
+```typescript
+import { getDatabaseClient } from '@antify/database';
+import databaseConfig from './database.config';
+import { defineUserSchema } from './schemas/user.schema';
+
+const client = await getDatabaseClient('databaseName', databaseConfig);
+
+// Connecting to a single connection client
+await client.connect();
+
+// Connecting to a specific tenant (multi connection client)
+// await client.connect('tenantId');
+
+// Use a model
+const users = await client.getModel(defineUserSchema).find({});
+```
+
+## Settings
+
+Set environment variable ``ANTIFY_DATABASE_DEBUG_CONNECTIONS`` to `true` to log connection events.
 
 ### Migration naming
 
@@ -33,8 +58,8 @@ Therefore, you must populate it like this:
 const client = await getDatabaseClient('core');
 
 const user = await client.getModel('users').find({}).populate({
-	path: 'address',
-	model: client.getModel('addresses')
+  path: 'address',
+  model: client.getModel('addresses')
 });
 ```
 
