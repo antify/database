@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.2](https://github.com/antify/database/compare/v3.3.1...v3.3.2) (2025-11-21)
+
+
+### Bug Fixes
+
+* multi connection reuse ([8b57867](https://github.com/antify/database/commit/8b578679ffb393e01c3ae506f015a0fe7cce6d1a))
+
 ### [3.3.1](https://github.com/antify/database/compare/v3.3.0...v3.3.1) (2025-11-21)
 
 
