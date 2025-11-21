@@ -44,22 +44,24 @@ export class MultiConnectionClient extends Client {
     const globalKey = `${GLOBAL_CONNECTION_PREFIX}${tenantId}`;
 
     if (!(globalThis as any)[globalKey]) {
-      const baseConnection = await createConnection(this.databaseUrl, {
+      (globalThis as any)[globalKey] = createConnection(this.databaseUrl, {
         authSource: 'admin',
         maxPoolSize: 1,
         minPoolSize: 1,
-      }).asPromise();
-
-      (globalThis as any)[globalKey] = baseConnection.useDb(`${this.databasePrefix}${tenantId}`, {
-        useCache: true,
       });
 
       if (process.env.ANTIFY_DATABASE_DEBUG_CONNECTIONS === 'true') {
-        console.log(`Antify database debug: Connected to multi connection for tenant ${tenantId}`);
+        console.log(`Antify database debug: Created connection to multi connection for tenant ${tenantId}`);
       }
     }
 
-    this.connection = (globalThis as any)[globalKey];
+    this.connection = (await (globalThis as any)[globalKey].asPromise()).useDb(`${this.databasePrefix}${tenantId}`, {
+      useCache: true,
+    });
+
+    if (process.env.ANTIFY_DATABASE_DEBUG_CONNECTIONS === 'true') {
+      console.log(`Antify database debug: Connected to multi connection for tenant ${tenantId}`);
+    }
 
     return this;
   }

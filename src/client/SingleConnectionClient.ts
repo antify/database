@@ -29,18 +29,22 @@ export class SingleConnectionClient extends Client {
 
   async connect(): Promise<SingleConnectionClient> {
     if (!(globalThis as any)[GLOBAL_CONNECTION_KEY]) {
-      (globalThis as any)[GLOBAL_CONNECTION_KEY] = await createConnection(this.databaseUrl, {
+      (globalThis as any)[GLOBAL_CONNECTION_KEY] = createConnection(this.databaseUrl, {
         authSource: 'admin',
         maxPoolSize: 1,
         minPoolSize: 1,
-      }).asPromise();
+      });
 
       if (process.env.ANTIFY_DATABASE_DEBUG_CONNECTIONS === 'true') {
-        console.info('Antify database debug: Connected to single connection');
+        console.info('Antify database debug: Created connection to single connection');
       }
     }
 
-    this.connection = (globalThis as any)[GLOBAL_CONNECTION_KEY];
+    this.connection = await (globalThis as any)[GLOBAL_CONNECTION_KEY].asPromise();
+
+    if (process.env.ANTIFY_DATABASE_DEBUG_CONNECTIONS === 'true') {
+      console.info('Antify database debug: Connected to single connection');
+    }
 
     return this;
   }
