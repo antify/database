@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.3](https://github.com/antify/database/compare/v3.3.2...v3.3.3) (2025-11-21)
+
+
+### Bug Fixes
+
+* use attachDatabasePool for connection cleanup ([8f052c1](https://github.com/antify/database/commit/8f052c13ecf5e1405455e195233c53ed4e746ef4))
+* use attachDatabasePool for connection cleanup ([f4ac40d](https://github.com/antify/database/commit/f4ac40daa3e6725ed2840faba0c78459c07e2959))
+
 ### [3.3.2](https://github.com/antify/database/compare/v3.3.1...v3.3.2) (2025-11-21)
 
 
