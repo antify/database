@@ -46,6 +46,8 @@ export class MultiConnectionClient extends Client {
     if (!(globalThis as any)[globalKey]) {
       const baseConnection = await createConnection(this.databaseUrl, {
         authSource: 'admin',
+        maxPoolSize: 1,
+        minPoolSize: 1,
       }).asPromise();
 
       (globalThis as any)[globalKey] = baseConnection.useDb(`${this.databasePrefix}${tenantId}`, {

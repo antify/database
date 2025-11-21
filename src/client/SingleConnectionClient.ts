@@ -31,6 +31,8 @@ export class SingleConnectionClient extends Client {
     if (!(globalThis as any)[GLOBAL_CONNECTION_KEY]) {
       (globalThis as any)[GLOBAL_CONNECTION_KEY] = await createConnection(this.databaseUrl, {
         authSource: 'admin',
+        maxPoolSize: 1,
+        minPoolSize: 1,
       }).asPromise();
 
       if (process.env.ANTIFY_DATABASE_DEBUG_CONNECTIONS === 'true') {
