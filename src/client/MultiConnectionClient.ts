@@ -10,6 +10,7 @@ import {
 import {
   IllegalTenantError,
 } from '../errors/IllegalTenantError';
+import { attachDatabasePool} from '@vercel/functions';
 
 const GLOBAL_CONNECTION_PREFIX = '__multi_mongoose_connection_';
 
@@ -49,6 +50,8 @@ export class MultiConnectionClient extends Client {
         maxPoolSize: 1,
         minPoolSize: 1,
       });
+
+      attachDatabasePool((globalThis as any)[globalKey]);
 
       if (process.env.ANTIFY_DATABASE_DEBUG_CONNECTIONS === 'true') {
         console.log(`Antify database debug: Created connection to multi connection for tenant ${tenantId}`);
