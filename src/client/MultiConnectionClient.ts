@@ -51,7 +51,7 @@ export class MultiConnectionClient extends Client {
         minPoolSize: 1,
       });
 
-      attachDatabasePool((globalThis as any)[globalKey]);
+      attachDatabasePool((globalThis as any)[globalKey].getClient());
 
       if (process.env.ANTIFY_DATABASE_DEBUG_CONNECTIONS === 'true') {
         console.log(`Antify database debug: Created connection to multi connection for tenant ${tenantId}`);

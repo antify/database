@@ -36,7 +36,7 @@ export class SingleConnectionClient extends Client {
         minPoolSize: 1,
       });
 
-      attachDatabasePool((globalThis as any)[GLOBAL_CONNECTION_KEY]);
+      attachDatabasePool((globalThis as any)[GLOBAL_CONNECTION_KEY].getClient());
 
       if (process.env.ANTIFY_DATABASE_DEBUG_CONNECTIONS === 'true') {
         console.info('Antify database debug: Created connection to single connection');
