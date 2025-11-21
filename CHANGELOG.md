@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/antify/database/compare/v3.2.0...v3.3.0) (2025-11-21)
+
+
+### Features
+
+* Add vercel connection pooler ([f66fa98](https://github.com/antify/database/commit/f66fa984fe5951b09c563b3685b68e00539935f0))
+
 ## [3.2.0](https://github.com/antify/database/compare/v3.1.0...v3.2.0) (2025-11-21)
 
 
