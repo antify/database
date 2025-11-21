@@ -7,6 +7,9 @@ import {
 import {
   Client,
 } from './Client';
+import {
+  attachDatabasePool,
+} from '@vercel/functions';
 
 const GLOBAL_CONNECTION_KEY = '__single_mongoose_connection__';
 
@@ -34,6 +37,8 @@ export class SingleConnectionClient extends Client {
         maxPoolSize: 1,
         minPoolSize: 1,
       }).asPromise();
+
+      attachDatabasePool((globalThis as any)[GLOBAL_CONNECTION_KEY].getClient());
 
       if (process.env.ANTIFY_DATABASE_DEBUG_CONNECTIONS === 'true') {
         console.info('Antify database debug: Connected to single connection');

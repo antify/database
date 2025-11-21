@@ -10,6 +10,9 @@ import {
 import {
   IllegalTenantError,
 } from '../errors/IllegalTenantError';
+import {
+  attachDatabasePool,
+} from '@vercel/functions';
 
 const GLOBAL_CONNECTION_PREFIX = '__multi_mongoose_connection_';
 
@@ -49,6 +52,8 @@ export class MultiConnectionClient extends Client {
         maxPoolSize: 1,
         minPoolSize: 1,
       }).asPromise();
+
+      attachDatabasePool(baseConnection.getClient());
 
       (globalThis as any)[globalKey] = baseConnection.useDb(`${this.databasePrefix}${tenantId}`, {
         useCache: true,
