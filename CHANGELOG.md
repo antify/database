@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://github.com/antify/database/compare/v3.3.3...v3.4.0) (2026-01-09)
+
+
+### Features
+
+* Export loadFixturesFromFilesystem function ([5603ef8](https://github.com/antify/database/commit/5603ef81c117285790e8ae000e09324bc67cf8cd))
+
 ### [3.3.3](https://github.com/antify/database/compare/v3.3.2...v3.3.3) (2025-11-21)
 
 
