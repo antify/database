@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/antify/database/compare/v3.4.1...v4.0.0) (2026-09-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* Migration callbacks now receive MigrationContext instead of the application Client.
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
+
+### Features
+
+* add schema-independent migration context ([b2d3836](https://github.com/antify/database/commit/b2d383692b9289c5f6e32e025a4aa9c73d0cb652))
+
 ### 3.4.1 (2026-01-09)
 
 ## [3.4.0](https://github.com/antify/database/compare/v3.3.3...v3.4.0) (2026-01-09)
