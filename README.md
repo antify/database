@@ -43,6 +43,26 @@ Set environment variable ``ANTIFY_DATABASE_DEBUG_CONNECTIONS`` to `true` to log 
 The sorting of the migration names is important. New migrations should be added to the end (sorted ASC).
 It's recommended to use a timestamp or date as name prefix.
 
+### Migration data access
+
+Migrations receive a schema-independent migration context instead of the regular application client.
+Use raw collection operations or migration helpers so migrations can still read and transform old document fields after the
+current application schema has changed.
+
+```typescript
+import { defineMigration } from '@antify/database';
+
+export default defineMigration({
+  async up(context) {
+    await context.renameField('cars', 'color', 'farbe');
+  },
+
+  async down(context) {
+    await context.renameField('cars', 'farbe', 'color');
+  },
+});
+```
+
 ## Common mistakes
 
 ### Error: Schema hasn't been registered for model

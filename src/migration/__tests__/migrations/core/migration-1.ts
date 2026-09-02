@@ -1,7 +1,7 @@
 import { defineMigration } from '../../../../../src';
 
 export default defineMigration({
-  async up(client) { },
+  async up() { },
 
-  async down(client) { },
+  async down() { },
 });

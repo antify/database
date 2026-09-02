@@ -1,6 +1,9 @@
-import {
+import type {
   Client,
 } from './client/Client';
+import type {
+  MigrationContext,
+} from './migration/MigrationContext';
 import type {
   Schema,
 } from 'mongoose';
@@ -66,8 +69,8 @@ DefineSchemaCb<TSchema> => cb as DefineSchemaCb<TSchema>;
 
 export type Migration = {
   name?: string;
-  up: (client: Client) => Promise<void>;
-  down: (client: Client) => Promise<void>;
+  up: (context: MigrationContext) => Promise<void>;
+  down: (context: MigrationContext) => Promise<void>;
 };
 
 export const defineMigration = (migration: Migration): Migration => migration;

@@ -142,6 +142,8 @@ export default [
   {
     ignores: [
       '!.storybook',
+      'dist',
+      'docker',
     ],
   },
 ];

@@ -44,10 +44,11 @@ describe('Migrate up test', async () => {
     };
     const client = SingleConnectionClient.getInstance(databaseConfiguration);
     const migrator = new Migrator(client, '');
+    const createMigrationDocumentSpy = vi.fn(async () => {});
 
     vi.spyOn(client, 'getModel').mockImplementation(<T>(modelName: string): Model<T> => {
       return {
-        create: async () => {},
+        create: createMigrationDocumentSpy,
       } as unknown as Model<T>;
     });
 
@@ -55,6 +56,7 @@ describe('Migrate up test', async () => {
       migrator,
       client,
       migrationMocks,
+      createMigrationDocumentSpy,
     };
   };
 
@@ -171,6 +173,52 @@ describe('Migrate up test', async () => {
     expect(onMigrationFinishedSpy.mock.calls[0][0]).toHaveProperty(
       'migrationName',
       'test-1',
+    );
+  });
+
+  test('Should execute migration with schema independent context', async () => {
+    const {
+      migrator,
+      client,
+    } = getMocks();
+    const collection = {
+      updateMany: vi.fn(async () => {}),
+    };
+    const db = {
+      collection: vi.fn(() => collection),
+    };
+    const migrationMocks = [
+      defineMigration({
+        name: 'test-1',
+        async up(context) {
+          await context.renameField('cars', 'color', 'farbe');
+        },
+        async down() {},
+      }),
+    ];
+
+    vi.spyOn(client, 'getConnection').mockReturnValue({
+      db,
+    } as unknown as ReturnType<typeof client.getConnection>);
+    vi.spyOn(migrator, 'loadMigrationState')
+      .mockReturnValueOnce(new Promise(async (resolve) => {
+        resolve(new MigrationState(migrationMocks, []));
+      }));
+
+    await migrateOneUp('test-1', migrator);
+
+    expect(db.collection).toBeCalledWith('cars');
+    expect(collection.updateMany).toBeCalledWith(
+      {
+        color: {
+          $exists: true,
+        },
+      },
+      {
+        $rename: {
+          color: 'farbe',
+        },
+      },
     );
   });
 
@@ -293,6 +341,30 @@ describe('Migrate up test', async () => {
       'error',
       new Error('Some failure happened'),
     );
+  });
+
+  test('Should not mark a failing migration as executed', async () => {
+    const {
+      migrator,
+      createMigrationDocumentSpy,
+    } = getMocks();
+    const migrationMocks = [
+      defineMigration({
+        name: 'test-1',
+        async up() {
+          throw new Error('Some failure happened');
+        },
+        async down() {},
+      }),
+    ];
+
+    vi.spyOn(migrator, 'loadMigrationState').mockReturnValueOnce(new Promise(async (resolve) => {
+      resolve(new MigrationState(migrationMocks, []));
+    }));
+
+    await migrateOneUp('test-1', migrator);
+
+    expect(createMigrationDocumentSpy).not.toBeCalled();
   });
 
   test('Should show info if there are no migrations to execute', async () => {

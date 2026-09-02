@@ -10,6 +10,9 @@ import {
 import {
   defineMigrationSchema,
 } from './utils';
+import {
+  MigrationContext,
+} from './MigrationContext';
 
 export type MigrationCallbacks = {
   beforeMigrate?: (migrationName: string) => void;
@@ -166,16 +169,16 @@ const executeMigrationUp = async (
   const startTime = process.hrtime();
 
   try {
-    await migration.up(client);
+    await migration.up(new MigrationContext(client));
+
+    await client.getModel(defineMigrationSchema).create({
+      file: migration.name,
+      executedOn: new Date(),
+    });
   } catch (e) {
     result.stopMigrationProcess = true;
     result.error = e as Error;
   }
-
-  await client.getModel(defineMigrationSchema).create({
-    file: migration.name,
-    executedOn: new Date(),
-  });
 
   result.executionTimeInMs = process.hrtime(startTime)[1] / 1000000;
 
