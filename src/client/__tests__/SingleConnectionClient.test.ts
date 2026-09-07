@@ -9,7 +9,7 @@ import {
 } from '../SingleConnectionClient';
 
 describe('SingleConnectionClient test', async () => {
-  const connectionUrl = 'mongodb://root:root@127.0.0.1:27017/test';
+  const connectionUrl = 'mongodb://root:root@127.0.0.1:27017/test?directConnection=true';
 
   test('should connect correctly', async () => {
     const client = SingleConnectionClient.getInstance({
@@ -21,8 +21,7 @@ describe('SingleConnectionClient test', async () => {
     const adminUtil = client.getConnection().db.admin();
     const result = await adminUtil.ping();
 
-    expect(result).toStrictEqual({
-      ok: 1,
-    });
+    // A replica set adds "$clusterTime" and "operationTime" to the response.
+    expect(result.ok).toStrictEqual(1);
   });
 });

@@ -63,6 +63,95 @@ export default defineMigration({
 });
 ```
 
+### Search indexes (Atlas Search / MongoDB Search)
+
+Migration contexts can create, update, list and drop search indexes.
+The underlying commands only work against an Atlas 7.0+ cluster (or MongoDB 8.2+ with
+self-managed Search). For local development and tests use the
+`mongodb/mongodb-atlas-local` docker image (see `docker-compose.yml`).
+
+```typescript
+import { defineMigration } from '@antify/database';
+
+export default defineMigration({
+  async up(context) {
+    // By default the helper waits until the index is built and queryable.
+    await context.createSearchIndex('cars', {
+      name: 'car_search',
+      definition: {
+        mappings: {
+          dynamic: true,
+        },
+      },
+    });
+
+    // Changing a definition rebuilds the index, so this waits as well.
+    await context.updateSearchIndex('cars', 'car_search', {
+      mappings: {
+        dynamic: true,
+        fields: {
+          farbe: {
+            type: 'string',
+          },
+        },
+      },
+    });
+
+    const indexes = await context.listSearchIndexes('cars');
+    // [{ name: 'car_search', status: 'READY', queryable: true, latestDefinition: { ... } }]
+
+    // Fire and forget, wait later on your own:
+    await context.createSearchIndex('logs', {
+      name: 'log_search',
+      definition: {
+        mappings: {
+          dynamic: true,
+        },
+      },
+    }, {
+      waitForReady: false,
+    });
+    await context.waitForSearchIndex('logs', 'log_search', {
+      timeoutInMs: 120000,
+    });
+
+    // Vector search index
+    await context.createSearchIndex('cars', {
+      name: 'car_embeddings',
+      type: 'vectorSearch',
+      definition: {
+        fields: [{
+          type: 'vector',
+          path: 'embedding',
+          numDimensions: 768,
+          similarity: 'cosine',
+        }],
+      },
+    });
+
+    await context.dropSearchIndex('cars', 'car_search');
+  },
+
+  async down(context) {
+    await context.dropSearchIndex('cars', 'car_search');
+  },
+});
+```
+
+A failed index build (`status: "FAILED"`) or exceeding `timeoutInMs` (default 60000) throws
+an error and stops the migration process. The migration is only marked as executed after
+`up` resolved, so if a run is interrupted while an index is still building, the next run
+fails with "index already exists". Guard the creation if you need resumability:
+
+```typescript
+if ((await context.listSearchIndexes('cars', 'car_search')).length === 0) {
+  await context.createSearchIndex('cars', { /* ... */ });
+}
+```
+
+On multi connection clients the helpers run against the tenant database of the connection,
+so tenant migrations create the index once per tenant database automatically.
+
 ## Common mistakes
 
 ### Error: Schema hasn't been registered for model

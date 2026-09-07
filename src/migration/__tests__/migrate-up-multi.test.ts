@@ -19,7 +19,7 @@ import * as migrateUpFunctions from '../migrate-up';
 describe('Migrate up multi connection test', async () => {
   const getMocks = () => {
     const databaseConfiguration: MultiConnectionDatabaseConfiguration = {
-      databaseUrl: 'mongodb://root:root@localhost:27017',
+      databaseUrl: 'mongodb://root:root@localhost:27017?directConnection=true',
       isSingleConnection: false,
       migrationDir: '',
       fetchTenants: () => {

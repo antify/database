@@ -38,7 +38,7 @@ describe('Migrate up test', async () => {
     ]);
 
     const databaseConfiguration: SingleConnectionDatabaseConfiguration = {
-      databaseUrl: 'mongodb://root:root@localhost:27017/migrate-up-test',
+      databaseUrl: 'mongodb://root:root@localhost:27017/migrate-up-test?directConnection=true',
       isSingleConnection: true,
       migrationDir: '',
     };
