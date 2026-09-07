@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 4.0.2 (2026-09-07)
+
 ### 4.0.1 (2026-09-02)
 
 ## [4.0.0](https://github.com/antify/database/compare/v3.4.1...v4.0.0) (2026-09-02)
