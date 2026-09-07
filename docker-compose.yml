@@ -2,14 +2,11 @@ version: '3'
 
 services:
   database:
-    image: mongo:latest
-    restart: always
+    image: mongodb/mongodb-atlas-local:latest
+    hostname: database
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-      MONGO_INITDB_USERNAME: core
-      MONGO_INITDB_PASSWORD: core
-      MONGO_INITDB_DATABASE: core
+      MONGODB_INITDB_ROOT_USERNAME: root
+      MONGODB_INITDB_ROOT_PASSWORD: root
     ports:
       - 27017:27017
     volumes:

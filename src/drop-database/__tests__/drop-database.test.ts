@@ -21,7 +21,7 @@ describe('Drop database test', async () => {
   test('Should drop a database', async () => {
     const dbName = 'drop-database-test';
     const databaseConfiguration: SingleConnectionDatabaseConfiguration = {
-      databaseUrl: `mongodb://root:root@localhost:27017/${dbName}`,
+      databaseUrl: `mongodb://root:root@localhost:27017/${dbName}?directConnection=true`,
       isSingleConnection: true,
       migrationDir: '',
     };

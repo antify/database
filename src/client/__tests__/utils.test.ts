@@ -15,7 +15,7 @@ import {
 } from 'mongoose';
 
 describe('utils test', async () => {
-  const connectionUrl = 'mongodb://root:root@127.0.0.1:27017';
+  const connectionUrl = 'mongodb://root:root@127.0.0.1:27017?directConnection=true';
   const testData = [
     {
       name: 'foo',

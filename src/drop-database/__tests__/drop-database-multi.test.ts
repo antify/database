@@ -24,7 +24,7 @@ describe('Drop database multi test', async () => {
 
   test('Should drop all databases of a multi connection', async () => {
     const databaseConfiguration: MultiConnectionDatabaseConfiguration = {
-      databaseUrl: 'mongodb://root:root@localhost:27017/drop-database-test',
+      databaseUrl: 'mongodb://root:root@localhost:27017/drop-database-test?directConnection=true',
       isSingleConnection: false,
       migrationDir: '',
       fetchTenants: async () => {

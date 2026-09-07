@@ -9,7 +9,7 @@ import {
 } from '../MultiConnectionClient';
 
 describe('MultiConnectionClient test', async () => {
-  const connectionUrl = 'mongodb://root:root@127.0.0.1:27017';
+  const connectionUrl = 'mongodb://root:root@127.0.0.1:27017?directConnection=true';
 
   test('should connect correctly', async () => {
     const client = MultiConnectionClient.getInstance({
@@ -21,9 +21,8 @@ describe('MultiConnectionClient test', async () => {
     const adminUtil = client.getConnection().db.admin();
     const result = await adminUtil.ping();
 
-    expect(result).toStrictEqual({
-      ok: 1,
-    });
+    // A replica set adds "$clusterTime" and "operationTime" to the response.
+    expect(result.ok).toStrictEqual(1);
   });
 
   test('should switch connection correctly', async () => {
@@ -37,8 +36,7 @@ describe('MultiConnectionClient test', async () => {
     const adminUtil = client.getConnection().db.admin();
     const result = await adminUtil.ping();
 
-    expect(result).toStrictEqual({
-      ok: 1,
-    });
+    // A replica set adds "$clusterTime" and "operationTime" to the response.
+    expect(result.ok).toStrictEqual(1);
   });
 });
